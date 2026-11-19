@@ -36,7 +36,7 @@ Every chip starts as a drawing: coloured rectangles, one colour per manufacturin
 - [1979]{.yr} Mead and Conway's textbook *Introduction to VLSI Systems* appears (dated 1980). A larger shared run, MPC79, returns chips for 82 projects 29 days after its design deadline. [→ The movement](#sec-movement)[^timeline][^mpcadventures]
 - [1981]{.yr} MOSIS, a government-funded "silicon broker", opens at the University of Southern California for designs in λ = 2.5 µm rules; France's CMP makes Grenoble student chips. [→ The brokers](#sec-brokers)[^cohen1981][^isi1984][^cmp1981]
 - [1982–87]{.yr} Chips designed this way lead to Silicon Graphics (1982), MIPS Computer Systems (1984) and Sun's SPARC processors (1987). [→ The chips](#sec-chips)[^nrc1999][^chmsgi]
-- [1984]{.yr} Berkeley's Magic layout editor checks λ rules while you draw ([→ The software](#sec-tools)); ISI checks rules for the newer CMOS chips "scalable from 3 microns to 1.2 microns". [→ SCMOS](#sec-scmos)[^magic1984][^isi1984]
+- [1984]{.yr} Berkeley's Magic layout editor checks λ rules while you draw. [→ The software](#sec-tools) ISI checks rules for the newer CMOS chips "scalable from 3 microns to 1.2 microns". [→ SCMOS](#sec-scmos)[^magic1984][^isi1984]
 - [Early 1990s]{.yr} Industry's λ era ends at features of about 0.7 µm. [→ The chips](#sec-chips)[^casale2014]
 - [1997]{.yr} MOSIS offers a separate sub-micron λ rule set (SUBM), and later a deep sub-micron one (DEEP), because some rules no longer shrink with the rest. [→ SCMOS](#sec-scmos)[^hp1997][^scmos8]
 - [1999]{.yr} 0.18 µm features are printed with 0.248 µm light. [→ Why it stopped](#sec-stopped)[^liebmann2003]

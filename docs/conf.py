@@ -1,11 +1,15 @@
 # Sphinx configuration for "Lambda rules" article
 import datetime
+import os
+import sys
+
+sys.path.insert(0, os.path.abspath("_ext"))
 
 project = "Drawing chips in λ"
 author = "Tim Ansell and contributors"
 copyright = f"{datetime.date.today().year}, {author}"
 
-extensions = ["myst_parser"]
+extensions = ["myst_parser", "lambda_mark"]
 myst_enable_extensions = ["colon_fence", "attrs_inline", "attrs_block", "deflist", "html_image"]
 myst_heading_anchors = 3
 myst_footnote_transition = True

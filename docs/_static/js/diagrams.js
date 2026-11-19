@@ -65,8 +65,10 @@
     var col = opts.color || "var(--ink)";
     var m = el("g", {}, g);
     el("line", { x1: x1, y1: y1, x2: x2, y2: y2, stroke: col, "stroke-width": opts.sw || 0.12, "marker-start": "url(#" + arr + ")", "marker-end": "url(#" + arr + ")" }, m);
+    // A halo in the panel colour keeps the label readable where it sits on a layer fill.
     if (label) svgText(m, (x1 + x2) / 2 + (opts.dx || 0), (y1 + y2) / 2 + (opts.dy || 0), label, {
       "font-size": opts.fs || 1.1, "text-anchor": opts.anchor || "middle", fill: col, "font-weight": 600,
+      stroke: "var(--bg-soft)", "stroke-width": (opts.fs || 1.1) * 0.24, "stroke-linejoin": "round", "paint-order": "stroke",
     });
     return m;
   }
@@ -453,6 +455,35 @@
     });
   }
 
+
+  /* Colour every λ (the design-rule unit) the same way as in the text. */
+  function lamify(root) {
+    var walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null);
+    var todo = [], n;
+    while ((n = walker.nextNode())) {
+      var par = n.parentNode;
+      if (n.nodeValue.indexOf("λ") < 0 || !par) continue;
+      if (par.classList && par.classList.contains("lam")) continue;
+      var tag = (par.localName || "").toLowerCase();
+      if (tag === "title" || tag === "style" || tag === "script") continue;
+      todo.push(n);
+    }
+    todo.forEach(function (t) {
+      var par = t.parentNode, svg = par.namespaceURI === NS;
+      var bits = t.nodeValue.split("λ"), frag = document.createDocumentFragment();
+      bits.forEach(function (b, i) {
+        if (b) frag.appendChild(document.createTextNode(b));
+        if (i < bits.length - 1) {
+          var sp = svg ? document.createElementNS(NS, "tspan") : document.createElement("span");
+          sp.setAttribute("class", "lam");
+          sp.textContent = "λ";
+          frag.appendChild(sp);
+        }
+      });
+      par.replaceChild(frag, t);
+    });
+  }
+
   var REGISTRY = { misalign: misalign, rulebook: rulebook, shrink: shrink, wafer: wafer, drift: drift, pitch: pitch };
   // Narrowest diagram box (px, padding included) at which each wide layout keeps every label >= 11 px.
   var MIN_WIDE = { misalign: 560, rulebook: 600, shrink: 730, wafer: 560, drift: 730, pitch: 712 };
@@ -464,6 +495,7 @@
     item.narrow = isNarrow(root);
     root.classList.toggle("narrow", item.narrow);
     try { item.f(root, item.narrow, item.state); } catch (e) { console.error(e); }
+    lamify(root);
   }
   function init() {
     document.documentElement.classList.add("js");
@@ -472,6 +504,7 @@
       if (!f || root.dataset.ready) return;
       root.dataset.ready = "1";
       var item = { root: root, f: f, state: {} };
+      if (window.MutationObserver) new MutationObserver(function () { lamify(root); }).observe(root, { childList: true, subtree: true, characterData: true });
       live.push(item);
       build(item);
     });

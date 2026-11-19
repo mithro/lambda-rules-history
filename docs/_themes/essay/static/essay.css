@@ -324,6 +324,14 @@ html:not(.js) figure .legend { display: none; }
 .article a.footnote-reference { padding: 14px .12em; margin: -14px 0; }
 .article a.headerlink { display: inline-block; min-height: 40px; min-width: 24px; line-height: 40px; vertical-align: middle; }
 
+/* ---------- λ, the design-rule unit, always in the accent colour ---------- */
+.lam { color: var(--accent); font-weight: 600; }
+.diagram svg text tspan.lam, .diagram svg tspan.lam { fill: var(--accent); font-weight: 700; }
+.diagram button.chip[aria-pressed="true"] .lam, .article a .lam, .toc-rail a .lam, .toc-drop-panel a .lam { color: inherit; }
+.article h1 .lam { font-weight: inherit; }
+/* In the drift chart the accent is the DEEP series colour, so λ there stays in the label's own colour. */
+.diagram[data-diagram="drift"] svg tspan.lam { fill: inherit; font-weight: inherit; }
+
 @media print {
   @page { size: A4; margin: 13mm 15mm 14mm; }
   .topbar, .progress, .toc-rail, .toc-drop, .controls, .site-footer, a.headerlink { display: none !important; }
