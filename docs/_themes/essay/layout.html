@@ -1,0 +1,64 @@
+{%- extends "basic/layout.html" %}
+{%- block extrahead %}
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script>
+  (function(){try{var t=localStorage.getItem('essay-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+</script>
+{%- endblock %}
+{%- block relbar1 %}{% endblock %}
+{%- block relbar2 %}{% endblock %}
+{%- block sidebar1 %}{% endblock %}
+{%- block sidebar2 %}{% endblock %}
+{%- block header %}
+<div class="progress" aria-hidden="true"><div class="progress-bar" id="progress-bar"></div></div>
+<header class="topbar">
+  <a class="topbar-title" href="{{ pathto(root_doc) }}">{{ docstitle|e }}</a>
+  <nav class="topbar-links">
+    {%- if theme_repo_url %}<a href="{{ theme_repo_url }}">Source</a>{% endif %}
+    <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle dark mode">◐</button>
+  </nav>
+</header>
+{%- endblock %}
+{%- block content %}
+<div class="page">
+  <aside class="toc-rail" aria-label="Contents">
+    <div class="toc-rail-inner">
+      <p class="toc-rail-label">Contents</p>
+      {{ toc }}
+    </div>
+  </aside>
+  <main class="article" role="main">
+    {% block body %}{% endblock %}
+  </main>
+</div>
+{%- endblock %}
+{%- block footer %}
+<footer class="site-footer">
+  <p>Text licensed <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.
+  {%- if theme_repo_url %} Corrections welcome on <a href="{{ theme_repo_url }}/issues">GitHub</a>.{% endif %}
+  {%- if last_updated %} Last updated {{ last_updated }}.{% endif %}</p>
+</footer>
+<script>
+(function(){
+  var bar=document.getElementById('progress-bar');
+  function upd(){var h=document.documentElement;var max=h.scrollHeight-h.clientHeight;bar.style.width=(max>0?(h.scrollTop/max*100):0)+'%';}
+  document.addEventListener('scroll',upd,{passive:true});upd();
+  var btn=document.getElementById('theme-toggle');
+  btn.addEventListener('click',function(){
+    var root=document.documentElement;var cur=root.getAttribute('data-theme');
+    var dark=cur?cur==='dark':window.matchMedia('(prefers-color-scheme: dark)').matches;
+    var next=dark?'light':'dark';root.setAttribute('data-theme',next);
+    try{localStorage.setItem('essay-theme',next);}catch(e){}
+    document.dispatchEvent(new CustomEvent('essay-theme-change'));
+  });
+  // highlight current section in toc rail
+  var links=[].slice.call(document.querySelectorAll('.toc-rail a.reference.internal'));
+  var targets=links.map(function(a){var id=decodeURIComponent((a.getAttribute('href')||'').split('#')[1]||'');return id?document.getElementById(id):null;});
+  function spy(){var y=window.scrollY+120;var cur=-1;targets.forEach(function(t,i){if(t&&t.getBoundingClientRect().top+window.scrollY<=y)cur=i;});links.forEach(function(a,i){a.classList.toggle('active',i===cur);});}
+  document.addEventListener('scroll',spy,{passive:true});spy();
+})();
+</script>
+{%- endblock %}

@@ -1,0 +1,10 @@
+[theme]
+inherit = "basic"
+stylesheets = ["essay.css"]
+sidebars = []
+pygments_style = { default = "friendly", dark = "monokai" }
+
+[options]
+dek = ""
+byline = ""
+repo_url = ""
