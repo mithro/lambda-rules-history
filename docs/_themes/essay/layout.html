@@ -17,7 +17,8 @@
 <header class="topbar">
   <a class="topbar-title" href="{{ pathto(root_doc) }}">{{ docstitle|e }}</a>
   <nav class="topbar-links">
-    {%- if theme_repo_url %}<a href="{{ theme_repo_url }}">Source</a>{% endif %}
+    <details class="toc-drop"><summary>Contents</summary><div class="toc-drop-panel">{{ toc }}</div></details>
+    {%- if theme_repo_url %}<a href="{{ theme_repo_url }}"><span class="long">Source on GitHub</span><span class="short">GitHub</span></a>{% endif %}
     <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle dark mode">◐</button>
   </nav>
 </header>
@@ -54,6 +55,12 @@
     try{localStorage.setItem('essay-theme',next);}catch(e){}
     document.dispatchEvent(new CustomEvent('essay-theme-change'));
   });
+  // join adjacent footnote markers with commas; mark "not offered" cells
+  [].forEach.call(document.querySelectorAll('a.footnote-reference'),function(a){var p=a.previousSibling;if(p&&p.nodeType===1&&p.classList.contains('footnote-reference'))a.classList.add('joined');});
+  [].forEach.call(document.querySelectorAll('table.numeric td'),function(td){if(/^\s*not offered\s*$/.test(td.textContent))td.classList.add('na');});
+  var drop=document.querySelector('.toc-drop');
+  if(drop){drop.addEventListener('click',function(e){if(e.target.closest('a'))drop.removeAttribute('open');});
+    document.addEventListener('click',function(e){if(!drop.contains(e.target))drop.removeAttribute('open');});}
   // highlight current section in toc rail
   var links=[].slice.call(document.querySelectorAll('.toc-rail a.reference.internal'));
   var targets=links.map(function(a){var id=decodeURIComponent((a.getAttribute('href')||'').split('#')[1]||'');return id?document.getElementById(id):null;});
