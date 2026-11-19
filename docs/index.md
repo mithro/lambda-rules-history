@@ -30,20 +30,19 @@ Every chip starts as a drawing: coloured rectangles, one colour per manufacturin
 ## Timeline
 
 {.timeline}
-- [1974]{.yr} IBM's Robert Dennard and colleagues show that shrinking a transistor's dimensions and voltage together makes it faster and more efficient. [→ One drawing, many factories](#sec-shrink)[^dennard1974]
-- [1977]{.yr} Conway devises λ-based rules at Xerox PARC while working with Mead's group at Caltech. [→ Conway's fix](#sec-ratios)[^conway2012]
-- [1978]{.yr} Conway's MIT course: 19 student projects are fabricated together on one shared chip, at λ = 3 µm. [→ The movement](#sec-movement)[^conway2012]
-- [1979]{.yr} Mead and Conway's textbook *Introduction to VLSI Systems* appears (dated 1980). A larger shared run, MPC79, returns chips for 82 projects 29 days after its design deadline. [→ The movement](#sec-movement)[^timeline][^mpcadventures]
-- [1981]{.yr} MOSIS, a government-funded "silicon broker", opens at the University of Southern California for designs in λ = 2.5 µm rules; France's CMP makes Grenoble student chips. [→ The brokers](#sec-brokers)[^cohen1981][^isi1984][^cmp1981]
-- [1982–87]{.yr} Chips designed this way lead to Silicon Graphics (1982), MIPS Computer Systems (1984) and Sun's SPARC processors (1987). [→ The chips](#sec-chips)[^nrc1999][^chmsgi]
-- [1984]{.yr} Berkeley's Magic layout editor checks λ rules while you draw. [→ The software](#sec-tools) ISI checks rules for the newer CMOS chips "scalable from 3 microns to 1.2 microns". [→ SCMOS](#sec-scmos)[^magic1984][^isi1984]
-- [Early 1990s]{.yr} Industry's λ era ends at features of about 0.7 µm. [→ The chips](#sec-chips)[^casale2014]
-- [1997]{.yr} MOSIS offers a separate sub-micron λ rule set (SUBM), and later a deep sub-micron one (DEEP), because some rules no longer shrink with the rest. [→ SCMOS](#sec-scmos)[^hp1997][^scmos8]
-- [1999]{.yr} 0.18 µm features are printed with 0.248 µm light. [→ Why it stopped](#sec-stopped)[^liebmann2003]
-- [2000]{.yr} MOSIS maps λ = 0.09 µm onto TSMC's 0.18 µm process, the smallest λ found in its published rules. [→ SCMOS](#sec-scmos)[^scmos74]
-- [2020]{.yr} Google and SkyWater publish the SKY130 kit of a factory's exact rules in microns; MOSIS has dropped its λ kits. [→ What outlived λ](#sec-survived)[^edwards2020]
-- [2022]{.yr} Tiny Tapeout's first shared chip carries 152 projects. [→ What outlived λ](#sec-survived)[^tt01]
-- [2025–26]{.yr} Efabless, which ran Google's free shared runs, shuts down; MOSIS 2.0 partners with GlobalFoundries. [→ What outlived λ](#sec-survived)[^ttefabless][^aac2026]
+- [1974]{.yr} IBM's Robert Dennard and colleagues show that shrinking a transistor's dimensions and voltage together makes it faster and more efficient.[^dennard1974] [→ One drawing, many factories](#sec-shrink)
+- [1977]{.yr} Conway devises λ-based rules at Xerox PARC while working with Mead's group at Caltech.[^conway2012] [→ Conway's fix](#sec-ratios)
+- [1978]{.yr} Conway's MIT course: 19 student projects are fabricated together on one shared chip, at λ = 3 µm.[^conway2012] [→ The movement](#sec-movement)
+- [1979]{.yr} Mead and Conway's textbook *Introduction to VLSI Systems* appears (dated 1980). A larger shared run, MPC79, returns chips for 82 projects 29 days after its design deadline.[^timeline][^mpcadventures] [→ The movement](#sec-movement)
+- [1981]{.yr} MOSIS, a government-funded "silicon broker", opens at the University of Southern California for designs in λ = 2.5 µm rules; France's CMP makes Grenoble student chips.[^cohen1981][^isi1984][^cmp1981] [→ The brokers](#sec-brokers)
+- [1982–87]{.yr} Chips designed this way lead to Silicon Graphics (1982), MIPS Computer Systems (1984) and Sun's SPARC processors (1987).[^nrc1999][^chmsgi] [→ The chips](#sec-chips)
+- [1984]{.yr} Berkeley's Magic layout editor checks λ rules while you draw; ISI checks rules for the newer CMOS chips "scalable from 3 microns to 1.2 microns".[^magic1984][^isi1984] [→ The software](#sec-tools) [→ SCMOS](#sec-scmos)
+- [Early 1990s]{.yr} Industry's λ era ends at features of about 0.7 µm.[^casale2014] [→ The chips](#sec-chips)
+- [1997]{.yr} MOSIS offers a separate sub-micron λ rule set (SUBM), and later a deep sub-micron one (DEEP), because some rules no longer shrink with the rest.[^hp1997][^scmos8] [→ SCMOS](#sec-scmos)
+- [1999]{.yr} 0.18 µm features are printed with 0.248 µm light.[^liebmann2003] [→ Why it stopped](#sec-stopped)
+- [2000]{.yr} MOSIS maps λ = 0.09 µm onto TSMC's 0.18 µm process, the smallest λ found in its published rules.[^scmos74] [→ SCMOS](#sec-scmos)
+- [2009]{.yr} MOSIS last revises its scalable λ rules; the smallest process they cover is 0.18 µm.[^scmos8] [→ Why it stopped](#sec-stopped)
+- [2020]{.yr} MOSIS has dropped its λ design kits; λ survives mainly in teaching.[^edwards2020][^harris] [→ Why it stopped](#sec-stopped)
 
 (sec-before)=
 ## Before λ, a chip design belonged to one factory
@@ -105,9 +104,9 @@ A λ layout is a drawing in abstract units. To make it, every coordinate is mult
     {"label":"AMI or HP 1.2 µm CMOS via MOSIS (1990s)","short":"1.2 µm","lambda":0.6,"node":1.2},
     {"label":"AMI or HP 0.5 µm CMOS via MOSIS (1990s)","short":"0.5 µm","lambda":0.35,"node":0.5},
     {"label":"TSMC 0.35 µm CMOS via MOSIS (1990s)","short":"0.35 µm","lambda":0.25,"node":0.35}
-  ]'><noscript><p>A simplified inverter that is 28λ × 46λ: at λ = 3 µm it measures 84 × 138 µm, taller than a 160 × 100 µm Tiny Tapeout tile; at λ = 0.25 µm it measures 7 × 11.5 µm.</p></noscript></div>
+  ]'><noscript><p>A simplified inverter that is 28λ × 46λ: at λ = 3 µm it measures 84 × 138 µm; at λ = 0.25 µm it measures 7 × 11.5 µm.</p></noscript></div>
   <div class="legend"><span style="--c:var(--l-well)">n-well (CMOS only, explained below)</span><span style="--c:var(--l-diff)">diffusion</span><span style="--c:var(--l-poly)">polysilicon</span><span style="--c:var(--l-metal)">metal</span><span style="--c:var(--l-contact)">contact</span></div>
-  <figcaption><strong>The drawing never changes; only λ does.</strong> Left: a simplified inverter (a NOT gate) drawn in λ units. Right: the same drawing at true size for six processes, next to a 10 µm scale bar and a 160 × 100 µm <a href="https://tinytapeout.com/faq/">Tiny Tapeout</a> tile; when the cell becomes a speck, an enlarged copy appears beside it. The inverter is drawn as CMOS, the later standard; the 1978–79 chips were nMOS. λ values from <a href="https://worrydream.com/refs/Conway_L_2012_-_Reminiscences_of_the_VLSI_Revolution.pdf">Conway (2012)</a> and <a href="https://www.ece.iit.edu/~eoruklu/courses/ece429/tutorial/rules72.html">MOSIS SCMOS rules rev. 7.2</a>.</figcaption>
+  <figcaption><strong>The drawing never changes; only λ does.</strong> Left: a simplified inverter (a NOT gate) drawn in λ units. Right: the same drawing at true size for six processes, next to a 10 µm scale bar. <a href="#fig-exact">A later figure</a> draws the same inverter to a modern factory's exact rules. The inverter is drawn as CMOS, the later standard; the 1978–79 chips were nMOS. λ values from <a href="https://worrydream.com/refs/Conway_L_2012_-_Reminiscences_of_the_VLSI_Revolution.pdf">Conway (2012)</a> and <a href="https://www.ece.iit.edu/~eoruklu/courses/ece429/tutorial/rules72.html">MOSIS SCMOS rules rev. 7.2</a>.</figcaption>
 </figure>
 ```
 
@@ -160,7 +159,7 @@ Layout tools of the period included:
 - **Caesar** and **KIC**, Berkeley layout editors producing CIF by 1981; Caesar was used to lay out RISC I, RISC II and MIPS.[^cifplot1981][^nrc1999]
 - **[Magic](https://en.wikipedia.org/wiki/Magic_(software))** (1984), from [John Ousterhout](https://en.wikipedia.org/wiki/John_Ousterhout)'s group at Berkeley, which re-ran [design rule checking](https://en.wikipedia.org/wiki/Design_rule_checking) incrementally as the designer edited.[^magic1984][^magicdrc1984]
 
-Circuit extractors and simulators followed; one at MIT caught bugs in the Scheme-79 chip before fabrication.[^baker1980] Magic is still maintained by Tim Edwards and is used with today's open process kits (described below), though its manual notes that "the decreasing use of scalable processes" has made drawing in λ "largely obsolete".[^magicsite][^magicmanual][^openpdks]
+Circuit extractors and simulators followed; one at MIT caught bugs in the Scheme-79 chip before fabrication.[^baker1980] Magic is still maintained by Tim Edwards, though its manual notes that "the decreasing use of scalable processes" has made drawing in λ "largely obsolete".[^magicsite][^magicmanual]
 
 ```{raw} html
 <figure class="fig" id="fig-flow">
@@ -234,8 +233,8 @@ The same HP 0.8 µm process had two values of λ, 0.5 µm under the original r
 
 ```{raw} html
 <figure class="fig wide" id="fig-drift">
-  <div class="diagram" data-diagram="drift"><noscript><p>Rule values in λ for SCMOS, SUBM and DEEP: poly width 2, 2, 2; metal 1 width 3, 3, 3; poly gap 2, 3, 3; metal 1 gap 2, 3, 3; metal 2 gap 3, 3, 4; gate overhang 2, 2, 2.5; diffusion past gate 3, 3, 4; contact gap 2, 3, 4; via width 2, 2, 3; gap between wells at different voltages 9, 18, 18.</p></noscript></div>
-  <figcaption><strong>Measured in λ, the gaps grew as λ shrank.</strong> Selected MOSIS rules in the original SCMOS, sub-micron (SUBM) and deep sub-micron (DEEP) rule sets. In the rules shown, widths mostly stayed put while gaps and overlaps grew, so the same circuit needed more λ × λ squares, and DEEP needed half-λ values such as 2.5λ. Data from MOSIS SCMOS rev. 8.00, tables 3a and 3b (<a href="https://web.archive.org/web/20111231160920/http://www.mosis.com:80/Technical/Designrules/scmos/scmos-main.html">archived copy</a>).</figcaption>
+  <div class="diagram" data-diagram="drift"><noscript><p>How many times larger each MOSIS rule became, measured in λ, from SCMOS to DEEP: gap between wells at different voltages 9λ to 18λ (×2); gap between contacts 2λ to 4λ (×2); poly gap 2λ to 3λ (×1.5); metal 1 gap 2λ to 3λ (×1.5); via width 2λ to 3λ (×1.5); metal 2 gap 3λ to 4λ (×1.33); diffusion past gate 3λ to 4λ (×1.33); gate overhang 2λ to 2.5λ (×1.25); poly width and metal 1 width unchanged at 2λ and 3λ.</p></noscript></div>
+  <figcaption><strong>Measured in λ, the gaps grew as λ shrank.</strong> Each bar shows how many times larger a rule became, in λ, in MOSIS's sub-micron (SUBM) or deep sub-micron (DEEP) rule set than in the original SCMOS set. If every dimension had scaled with λ, every bar would stay at ×1. Widths mostly did; gaps and overlaps grew, so the same circuit needed more λ × λ squares, and DEEP needed half-λ values such as 2.5λ. Data from MOSIS SCMOS rev. 8.00, tables 3a and 3b (<a href="https://web.archive.org/web/20111231160920/http://www.mosis.com:80/Technical/Designrules/scmos/scmos-main.html">archived copy</a>).</figcaption>
 </figure>
 ```
 
@@ -263,18 +262,18 @@ The same HP 0.8 µm process had two values of λ, 0.5 µm under the original r
 
 **The rulebooks exploded.** Casale-Rossi contrasted Conway's "just two pages" with modern processes needing "several thousands of complex design rules", described in "tens of thousands of lines of code".[^casale2014] *Semiconductor Engineering* reported in 2018 that the count rises steeply again when a single layer is printed in two, three or four exposures, a technique called [multiple patterning](https://en.wikipedia.org/wiki/Multiple_patterning).[^semieng2018]
 
-There was no single day when λ died. MOSIS's scalable rules stop at 0.18 µm, in a document last revised in 2009, and by 2020 Tim Edwards, then at Efabless, wrote that MOSIS "has dropped support" for its SCMOS kits, which "only worked because they used conservative rules that did not reveal manufacturing limits".[^scmos8][^edwards2020] λ lives on in teaching: Harvey Mudd College's *CMOS VLSI Design* course still introduces rules "in terms of λ = f/2", with *f* the feature size.[^harris]
+There was no single day when λ died. MOSIS's scalable rules stop at 0.18 µm, in a document last revised in 2009, and by 2020 Tim Edwards wrote that MOSIS "has dropped support" for its SCMOS kits, which "only worked because they used conservative rules that did not reveal manufacturing limits".[^scmos8][^edwards2020] λ lives on in teaching: Harvey Mudd College's *CMOS VLSI Design* course still introduces rules "in terms of λ = f/2", with *f* the feature size.[^harris]
 
 (sec-survived)=
-## The shared wafer outlived the ruler
+## What replaced the ruler
 
-What outlived λ was the shared-wafer broker, now working from each factory's exact rules.[^edwards2020] In 2020 Google and [SkyWater](https://en.wikipedia.org/wiki/SkyWater_Technology) released the SKY130 [process design kit](https://en.wikipedia.org/wiki/Process_design_kit) (PDK), the bundle of rules, transistor models and building blocks for a 130 nm process, as open source. Unlike MOSIS's SCMOS, it publishes the factory's exact rules in microns.[^edwards2020]
+Chip design kits now hold each factory's exact rules in microns rather than one scalable ruler.[^edwards2020] GlobalFoundries' 180 nm GF180MCU kit shows why no λ would fit. Its 3.3 V transistors need a gate at least 0.28 µm long, contacts exactly 0.22 µm square, metal 1 at least 0.23 µm wide and poly lines 0.24 µm apart.[^gf180rules] Measured in λ = 0.09 µm, the value MOSIS used for 0.18 µm processes, those are 3.1λ, 2.4λ, 2.6λ and 2.7λ: no whole-number multiples of any one λ.[^scmos74][^gf180rules] Drawn to the exact numbers, the same inverter comes out smaller than the λ version, because each dimension takes only the space its own rule needs.
 
-Those rules show why no λ would fit. Poly must be at least 0.150 µm wide and 0.210 µm apart; metal 1 at least 0.140 µm wide.[^sky130rules] Set λ to half the poly width, 0.075 µm, and the poly gap becomes 2.8λ and the metal width 1.87λ. In the Mead–Conway rules, metal was 50% *wider* than poly; here it is narrower.[^lyon1981][^sky130rules]
-
-Google funded free shared runs ("shuttles") on SKY130 and GlobalFoundries' 180 nm process that made 360 designs from more than 600 submissions in 19 countries.[^google2023] [Tiny Tapeout](https://tinytapeout.com/) took sharing further: its first run in 2022 put 152 projects onto one chip.[^tt01] Since its fourth run a Tiny Tapeout tile has been about 160 × 100 µm and holds about 1,000 logic gates; at λ = 3 µm, the <a href="#fig-shrink">28λ × 46λ inverter</a> alone would take 84 × 138 µm.[^ttfaq] Its designers write [Verilog](https://en.wikipedia.org/wiki/Verilog) rather than drawing rectangles, and the open-source OpenLane flow turns it into a layout that obeys the micron rules, adding protective "antenna diodes" where needed.[^ttfaq]
-
-The brokers still change, as in the 1980s: Efabless shut down in March 2025, and a relaunched MOSIS 2.0 partnered with [GlobalFoundries](https://en.wikipedia.org/wiki/GlobalFoundries) in July 2026.[^ttefabless][^aac2026]
+<figure class="fig" id="fig-exact">
+  <div class="diagram" data-diagram="exact"><noscript><p>The 28λ × 46λ inverter at λ = 0.09 µm measures 2.52 × 4.14 µm (10.4 µm²). The same circuit drawn to GF180MCU rules measures 2.20 × 3.06 µm (6.7 µm²).</p></noscript></div>
+  <div class="legend"><span style="--c:var(--l-well)">n-well</span><span style="--c:var(--l-diff)">diffusion</span><span style="--c:var(--l-poly)">polysilicon</span><span style="--c:var(--l-metal)">metal</span><span style="--c:var(--l-contact)">contact</span></div>
+  <figcaption><strong>The same inverter at 180 nm, drawn both ways at the same scale.</strong> Left: the λ drawing from <a href="#fig-shrink">the earlier figure</a> at λ = 0.09 µm. Right: the same circuit drawn for this article to GF180MCU's 3.3 V rules (contact, Poly2, COMP, Nwell and Metal1 rules CO.1–CO.8, PL.2–PL.5b, DF.4c, DF.6, DF.16 and Mn.1–Mn.3, checked by script), with the λ cell's outline dashed behind it. Both are simplified hand layouts without implant layers, so the area saving is illustrative. Rules from the <a href="https://gf180mcu-pdk.readthedocs.io/en/latest/physical_verification/design_manual/drm_07_02.html">GF180MCU design manual</a>.</figcaption>
+</figure>
 
 "We had defined a clean interface between design and fab," Conway wrote.[^conway2012] For about twenty years that interface was λ, a conservative ruler that gave up area for "portability and simplicity".[^scmos8] Today it is a process design kit holding the factory's exact rules.[^edwards2020]
 
@@ -288,6 +287,7 @@ The brokers still change, as in the 1980s: Efabless shut down in March 2025, and
 
 [^conway2012]: Lynn Conway, ["Reminiscences of the VLSI Revolution: How a series of failures triggered a paradigm shift in digital design"](https://worrydream.com/refs/Conway_L_2012_-_Reminiscences_of_the_VLSI_Revolution.pdf), *IEEE Solid-State Circuits Magazine* 4(4), 2012, pp. 8–31. DOI [10.1109/MSSC.2012.2215752](https://doi.org/10.1109/MSSC.2012.2215752). Author's copy: [archived](https://web.archive.org/web/20241230111939/https://ai.eecs.umich.edu/people/conway/Memoirs/VLSI/Lynn_Conway_VLSI_Reminiscences.pdf).
 [^timeline]: Lynn Conway, ["Reminiscences of the VLSI Revolution: A Timeline of Events"](https://web.archive.org/web/20260721222742/https://ai.eecs.umich.edu/people/conway/Memoirs/VLSI/Timeline/VLSI_Timeline.pdf), December 2012 (archived copy).
+[^gf180rules]: GlobalFoundries, GF180MCU PDK design manual, sections [7.4 Nwell](https://gf180mcu-pdk.readthedocs.io/en/latest/physical_verification/design_manual/drm_07_05.html), [7.5 Comp](https://gf180mcu-pdk.readthedocs.io/en/latest/physical_verification/design_manual/drm_07_06.html), [7.7 Poly2](https://gf180mcu-pdk.readthedocs.io/en/latest/physical_verification/design_manual/drm_07_08.html), [7.12 Contact](https://gf180mcu-pdk.readthedocs.io/en/latest/physical_verification/design_manual/drm_07_13.html) and [7.13 Metaln](https://gf180mcu-pdk.readthedocs.io/en/latest/physical_verification/design_manual/drm_07_14.html); 3.3 V column.
 [^lyon1981]: Richard F. Lyon, ["Simplified Design Rules for VLSI Layouts"](https://www.dicklyon.com/tech/Scans/DesignRules-Lyon.pdf), Southcon '81, January 1981; also *LAMBDA*, first quarter 1981.
 [^mpcadventures]: Lynn Conway, ["The MPC Adventures: Experiences with the Generation of VLSI Design and Implementation Methodologies"](https://ftp.mirrorservice.org/sites/www.bitsavers.org/pdf/xerox/parc/techReports/VLSI-81-2_The_MPC_Adventures.pdf), Xerox PARC report VLSI-81-2, January 1981. Journal version: *Microprocessing and Microprogramming* 10(4), 1982, pp. 209–228, DOI [10.1016/0165-6074(82)90054-0](https://doi.org/10.1016/0165-6074(82)90054-0).
 [^mpc79doc]: Lynn Conway, Alan Bell, Martin Newell et al., ["MPC79 Implementation Documentation"](https://web.archive.org/web/20231122152953/https://ai.eecs.umich.edu/people/conway/VLSI/MPC79/ImpDoc/ImpDoc79Front.html), Xerox PARC, 1980 (archived copy).
@@ -313,7 +313,6 @@ The brokers still change, as in the 1980s: Efabless shut down in March 2025, and
 [^magicdrc1984]: George S. Taylor and John K. Ousterhout, "Magic's Incremental Design-Rule Checker", 21st Design Automation Conference, 1984. DOI [10.1109/DAC.1984.1585790](https://doi.org/10.1109/DAC.1984.1585790).
 [^magicmanual]: Magic VLSI, ["Magic Maintainer's Manual #2: The Technology File"](https://opencircuitdesign.com/magic/techref/maint2.html).
 [^magicsite]: Open Circuit Design, ["Magic VLSI Layout Tool"](https://opencircuitdesign.com/magic/), project home page.
-[^openpdks]: R. Timothy Edwards, ["open_pdks"](https://github.com/RTimothyEdwards/open_pdks), source repository.
 [^scheme1980]: Jack Holloway, Guy L. Steele Jr., Gerald Jay Sussman and Alan Bell, ["The SCHEME-79 Chip"](https://dspace.mit.edu/handle/1721.1/6334), MIT AI Memo 559, January 1980.
 [^clark1982]: James H. Clark, ["The Geometry Engine: A VLSI Geometry System for Graphics"](https://archive.org/download/bitsavers_sgiirisgeok_1057823/p127-clark.pdf), *Computer Graphics* (SIGGRAPH '82) 16(3), July 1982, pp. 127–133. DOI [10.1145/800064.801272](https://doi.org/10.1145/800064.801272).
 [^chmsgi]: Computer History Museum, ["Silicon Graphics"](https://www.computerhistory.org/revolution/computer-graphics-music-and-art/15/219), *Revolution* exhibition.
@@ -330,8 +329,3 @@ The brokers still change, as in the 1980s: Efabless shut down in March 2025, and
 [^edwards2020]: R. Timothy Edwards, ["Google/SkyWater and the Promise of the Open PDK"](https://woset-workshop.github.io/PDFs/2020/a03.pdf), Workshop on Open-Source EDA Technology (WOSET), 2020.
 [^sky130rules]: SkyWater, ["SKY130 Periphery Rules"](https://skywater-pdk.readthedocs.io/en/main/rules/periphery.html), rules poly.1a, poly.2, m1.1 and m1.pd.
 [^sky130antenna]: SkyWater, ["SKY130 Antenna Rules"](https://skywater-pdk.readthedocs.io/en/main/rules/antenna.html).
-[^google2023]: Google Open Source Blog, ["Open source PDKs joining Linux Foundation's CHIPS Alliance"](https://opensource.googleblog.com/2023/11/open-source-pdks-joining-linux-foundation-chips-alliance.html), November 2023.
-[^tt01]: Tiny Tapeout, ["TT01 Submitted to Efabless MPW7 Shuttle"](https://tinytapeout.com/news/tt01-launch/), 4 September 2022.
-[^ttfaq]: Tiny Tapeout, ["FAQ"](https://tinytapeout.com/faq/), sections on tile size and OpenLane.
-[^ttefabless]: Tiny Tapeout, ["Efabless shuts down – Tiny Tapeout will continue"](https://tinytapeout.com/news/efabless-shutsdown/), 1 March 2025.
-[^aac2026]: Luke James, ["MOSIS Partners With GlobalFoundries, Extending 40-Year Prototyping Legacy"](https://www.allaboutcircuits.com/news/mosis-partners-with-globalfoundries-extending-40-year-prototyping-legacy), *All About Circuits*, 22 July 2026.
