@@ -10,6 +10,7 @@
   --good: #2e7a38;
   --bad: #c0262d;
   --on-accent: #ffffff;
+  --dim: .28;
   --rule: #e2dbcd;
   --accent: #b4441c;        /* oxide red */
   --accent-soft: #f6e3d9;
@@ -31,14 +32,14 @@
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #16150f; --bg-soft: #201e17; --ink: #ece6da; --ink-soft: #b9b1a3; --ink-faint: #9b9486; --good: #6fcf7a; --bad: #ff7b72; --on-accent: #16150f;
+    --bg: #16150f; --bg-soft: #201e17; --ink: #ece6da; --ink-soft: #b9b1a3; --ink-faint: #9b9486; --good: #6fcf7a; --bad: #ff7b72; --on-accent: #16150f; --dim: .45;
     --rule: #34302a; --accent: #f08a5d; --accent-soft: #3a2519; --link: #8ec1ef; --link-hover: #f08a5d;
     --code-bg: #26231c; --l-diff: #5cc068; --l-poly: #ef6a60; --l-metal: #6f9ef0; --l-contact: #eee;
     --l-well: #7d6f45; --l-implant: #b58f2c;
   }
 }
 :root[data-theme="dark"] {
-  --bg: #16150f; --bg-soft: #201e17; --ink: #ece6da; --ink-soft: #b9b1a3; --ink-faint: #9b9486; --good: #6fcf7a; --bad: #ff7b72; --on-accent: #16150f;
+  --bg: #16150f; --bg-soft: #201e17; --ink: #ece6da; --ink-soft: #b9b1a3; --ink-faint: #9b9486; --good: #6fcf7a; --bad: #ff7b72; --on-accent: #16150f; --dim: .45;
   --rule: #34302a; --accent: #f08a5d; --accent-soft: #3a2519; --link: #8ec1ef; --link-hover: #f08a5d;
   --code-bg: #26231c; --l-diff: #5cc068; --l-poly: #ef6a60; --l-metal: #6f9ef0; --l-contact: #eee;
   --l-well: #7d6f45; --l-implant: #b58f2c;
@@ -208,53 +209,7 @@ h1:hover a.headerlink, h2:hover a.headerlink, h3:hover a.headerlink { visibility
   .article { padding-top: 2rem; }
   .article h2 { font-size: 1.35rem; }
 }
-@media print {
-  @page { size: A4; margin: 13mm 15mm 14mm; }
-  .topbar, .progress, .toc-rail, .toc-drop, .controls, .site-footer, a.headerlink { display: none !important; }
-  html, body { background: #fff; }
-  body { font-size: 9.6pt; line-height: 1.4; }
-  .page { display: block; padding: 0; }
-  .article { padding: 0; max-width: none; }
-  .article h1 { font-size: 22pt; margin-bottom: 6pt; }
-  .article .dek { font-size: 12pt; margin-bottom: 6pt; }
-  .article .byline { margin-bottom: 10pt; font-size: 8pt; }
-  .article h2 { font-size: 13pt; margin: 14pt 0 6pt; padding-top: 6pt; break-after: avoid; }
-  .article p { margin-bottom: 6pt; orphans: 3; widows: 3; }
-  .article li { margin-bottom: 2pt; }
-  .wide { width: auto; left: 0; transform: none; }
-  .article figure, .article figure.fig { margin: 8pt 0; break-inside: avoid; }
-  .diagram { padding: 4pt; border-radius: 3px; }
-  /* Heights chosen so the smallest label in each drawing prints at about 7 pt. */
-  .diagram svg { max-height: 60mm !important; }
-  .diagram[data-diagram="misalign"] svg { max-height: 48mm !important; }
-  .diagram[data-diagram="rulebook"] svg { max-height: 58mm !important; }
-  .diagram[data-diagram="shrink"] svg { max-height: 82mm !important; }
-  .diagram[data-diagram="wafer"] svg { max-height: 56mm !important; }
-  .diagram[data-diagram="drift"] svg { max-height: 72mm !important; }
-  .diagram[data-diagram="pitch"] svg { max-height: 50mm !important; }
-  /* The readout names the state that was printed; the rulebook's rule list gives every value. */
-  .diagram .readout { font-size: 8pt; min-height: 0; margin-top: 3pt; }
-  .diagram[data-diagram="rulebook"] .controls { display: flex !important; margin-top: 4pt; }
-  .diagram[data-diagram="rulebook"] button.chip { font-size: 7.5pt; min-height: 0; padding: 1pt 5pt; }
-  .article figure.wide { display: block; }
-  .article figcaption, .legend { font-size: 8pt; margin-top: 3pt; line-height: 1.35; }
-  .legend span::before { width: 8px; height: 8px; }
-  .article div.admonition { font-size: 9pt; padding: 6pt 9pt 2pt; margin: 8pt 0; break-inside: avoid; }
-  .article ul.timeline { font-size: 8.8pt; margin: 6pt 0 8pt; }
-  .article ul.timeline > li { margin-bottom: 3pt; }
-  .article ol.flow { font-size: 8.5pt; gap: 3pt 8pt; grid-template-columns: 1fr 1fr; }
-  .article ol.flow > li + li::after { display: none; }
-  .article ol.flow > li { padding: 3pt 6pt 3pt 24pt; }
-  .article ol.flow > li::before { width: 13pt; height: 13pt; font-size: 8pt; left: 5pt; top: 3pt; }
-  .article table.docutils { font-size: 8.8pt; margin: 6pt 0; }
-  .article table.docutils tr { break-inside: avoid; }
-  .article figure#fig-flow { break-inside: auto; }
-  .article table caption { font-size: 8.5pt; }
-  .article blockquote { margin: 8pt 0; }
-  .article aside.footnote-list { font-size: 8pt; }
-  a { color: inherit; }
-  .article ul.timeline a[href^="#"], .article div.admonition a[href^="#"] { display: none; }
-}
+
 
 
 .diagram .rule-list { gap: .4rem; }
@@ -328,4 +283,81 @@ h1:hover a.headerlink, h2:hover a.headerlink, h3:hover a.headerlink { visibility
   .topbar .long { display: none; }
   .topbar .short { display: inline; }
   .topbar-links { gap: .7rem; }
+}
+
+/* ---------- Round 2 visual rules ---------- */
+@media (max-width: 640px) { .toc-drop { position: static; } .toc-drop-panel { position: fixed; left: 16px; right: 16px; top: 52px; width: auto; } }
+.diagram noscript p { font: 15px/1.5 var(--sans); margin: 0; color: var(--ink-soft); }
+html:not(.js) figure .legend { display: none; }
+.article a.footnote-reference { font-size: max(.62em, 11px); padding: 0 .1em; }
+.article ul.timeline li, .article ul.timeline li p { hyphens: manual !important; }
+.article ul.timeline a[href^="#"] { white-space: nowrap; }
+@media (max-width: 640px) {
+  .article ul.timeline::before { left: 4.9rem; }
+  .article ul.timeline > li { padding-left: 5.9rem; }
+  .article ul.timeline > li::before { left: calc(4.9rem - 4px); }
+  .article ul.timeline .yr { width: 4.4rem; font-size: .92em; }
+}
+.article table.numeric td.na { white-space: nowrap; font-size: 13px; }
+.article table.cards td:first-child { white-space: normal; }
+.topbar-title { min-height: 40px; display: inline-flex; align-items: center; }
+.theme-toggle { display: inline-grid; place-items: center; padding: 0; }
+.theme-toggle svg { width: 18px; height: 18px; }
+.article h2 { font-family: var(--serif); font-weight: 650; font-size: 1.75rem; letter-spacing: -.01em; }
+.toc-drop-panel { box-shadow: 0 8px 24px color-mix(in srgb, var(--ink) 14%, transparent); }
+@media print {
+  .article section#sources { break-before: page; }
+  .article aside.footnote-list { display: block; }
+  .article aside.footnote { display: block; }
+  .article aside.footnote > span.label { display: inline; margin-right: .4em; }
+  .article aside.footnote > p { display: inline; }
+  .article h2 { font-size: 14pt; }
+}
+
+@media print {
+  @page { size: A4; margin: 13mm 15mm 14mm; }
+  .topbar, .progress, .toc-rail, .toc-drop, .controls, .site-footer, a.headerlink { display: none !important; }
+  html, body { background: #fff; }
+  body { font-size: 9.6pt; line-height: 1.4; }
+  .page { display: block; padding: 0; }
+  .article { padding: 0; max-width: none; }
+  .article h1 { font-size: 22pt; margin-bottom: 6pt; }
+  .article .dek { font-size: 12pt; margin-bottom: 6pt; }
+  .article .byline { margin-bottom: 10pt; font-size: 8pt; }
+  .article h2 { font-size: 13pt; margin: 14pt 0 6pt; padding-top: 6pt; break-after: avoid; }
+  .article p { margin-bottom: 6pt; orphans: 3; widows: 3; }
+  .article li { margin-bottom: 2pt; }
+  .wide { width: auto; left: 0; transform: none; }
+  .article figure, .article figure.fig { margin: 8pt 0; break-inside: avoid; }
+  .diagram { padding: 4pt; border-radius: 3px; }
+  /* Heights chosen so the smallest label in each drawing prints at about 6 pt. */
+  .diagram svg { max-height: 50mm !important; }
+  .diagram[data-diagram="misalign"] svg { max-height: 40mm !important; }
+  .diagram[data-diagram="rulebook"] svg { max-height: 48mm !important; }
+  .diagram[data-diagram="shrink"] svg { max-height: 66mm !important; }
+  .diagram[data-diagram="wafer"] svg { max-height: 46mm !important; }
+  .diagram[data-diagram="drift"] svg { max-height: 62mm !important; }
+  .diagram[data-diagram="pitch"] svg { max-height: 50mm !important; }
+  /* The readout names the state that was printed; the rulebook's rule list gives every value. */
+  .diagram .readout { font-size: 8pt; min-height: 0; margin-top: 3pt; }
+  .diagram[data-diagram="rulebook"] .controls { display: flex !important; margin-top: 4pt; }
+  .diagram[data-diagram="rulebook"] button.chip { font-size: 7.5pt; min-height: 0; padding: 1pt 5pt; }
+  .article figure.wide { display: block; }
+  .article figcaption, .legend { font-size: 8pt; margin-top: 3pt; line-height: 1.35; }
+  .legend span::before { width: 8px; height: 8px; }
+  .article div.admonition { font-size: 9pt; padding: 6pt 9pt 2pt; margin: 8pt 0; break-inside: avoid; }
+  .article ul.timeline { font-size: 8.8pt; margin: 6pt 0 8pt; }
+  .article ul.timeline > li { margin-bottom: 3pt; }
+  .article ol.flow { font-size: 8.5pt; gap: 3pt 8pt; grid-template-columns: 1fr 1fr; }
+  .article ol.flow > li + li::after { display: none; }
+  .article ol.flow > li { padding: 3pt 6pt 3pt 24pt; }
+  .article ol.flow > li::before { width: 13pt; height: 13pt; font-size: 8pt; left: 5pt; top: 3pt; }
+  .article table.docutils { font-size: 8.8pt; margin: 6pt 0; }
+  .article table.docutils tr { break-inside: avoid; }
+  .article figure#fig-flow { break-inside: auto; }
+  .article table caption { font-size: 8.5pt; }
+  .article blockquote { margin: 8pt 0; }
+  .article aside.footnote-list { font-size: 8pt; }
+  a { color: inherit; }
+  .article ul.timeline a[href^="#"], .article div.admonition a[href^="#"] { display: none; }
 }

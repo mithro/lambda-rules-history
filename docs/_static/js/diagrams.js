@@ -153,8 +153,8 @@
     if (st.key === undefined) st.key = rules[0].key;
     var f = narrow ? 1.2 : 0.85;
     // strips occupy x 0..30, y 0..18; device block is drawn at (ox, oy)
-    var ox = narrow ? 10 : 32, oy = narrow ? 18 : 0;
-    var W = narrow ? 30 : 42, H = narrow ? 37 : 20;
+    var ox = narrow ? 10 : 32, oy = narrow ? 20.5 : 0;
+    var W = narrow ? 30 : 42, H = narrow ? 39.5 : 21;
     var svg = el("svg", { viewBox: "-0.5 0 " + (W + 1) + " " + H, role: "img", "aria-label": "Basic lambda design rules drawn to scale on a lambda grid" }, root);
     var A = arrowDefs(svg, 3);
     var g = el("g", {}, svg);
@@ -168,6 +168,7 @@
     r("tr", "diff", ox + 1, oy + 6, 6, 2); r("tr", "poly", ox + 3, oy + 4, 2, 6);
     r("ct", "diff", ox + 1, oy + 12, 4, 4); r("ct", "metal", ox + 1, oy + 12, 4, 4); r("ct", "contact", ox + 2, oy + 13, 2, 2);
     svgText(g, ox + 4, oy + 3.4, "transistor", { "font-size": f, "text-anchor": "middle", fill: "var(--ink-soft)" });
+    [["diffusion", 4.5], ["poly", 14], ["metal", 24.5]].forEach(function (l) { svgText(g, l[1], 20.4, l[0], { "font-size": f, "text-anchor": "middle", fill: "var(--ink-soft)" }); });
     svgText(g, ox + 3, oy + 11.5, "contact", { "font-size": f, "text-anchor": "middle", fill: "var(--ink-soft)" });
     var hi = el("g", {}, g);
     var fs = f * 1.3;
@@ -190,7 +191,7 @@
       (D[key] || []).forEach(function (d) {
         dimLine(hi, A.id, d[0], d[1], d[2], d[3], d[4], { color: "var(--accent)", fs: fs, dx: d[5], dy: d[6], sw: 0.16 });
       });
-      shapes.forEach(function (s) { s[1].style.opacity = s[0] === RULE_GROUP[key] ? 1 : 0.28; });
+      shapes.forEach(function (s) { s[1].style.opacity = s[0] === RULE_GROUP[key] ? 1 : "var(--dim)"; });
       var idx = 0;
       rules.forEach(function (x, i) { if (x.key === key) idx = i; });
       mark(idx);
@@ -219,12 +220,13 @@
   function shrink(root, narrow, st) {
     var procs = JSON.parse(root.getAttribute("data-procs"));
     if (st.i === undefined) st.i = 0;
-    var f = narrow ? 8.6 : 5.5;
+    var f = narrow ? 9 : 6;
     var base = 160, s = 2.7;
-    var VW = narrow ? 225 : 345, VH = narrow ? 368 : 182;
-    var svg = svgRoot(root, VW, VH, "An inverter drawn in lambda units, and the same drawing at true size for the chosen process");
+    var RW = 262; // right panel width in micrometres
+    var VW = narrow ? RW : 118 + RW, VH = narrow ? 372 : 184;
+    var svg = svgRoot(root, VW, VH, "An inverter drawn in lambda units, and the same drawing at true size for the chosen process next to a Tiny Tapeout tile");
     // Left panel: fixed lambda scale
-    var L = el("g", { transform: narrow ? "translate(57,0)" : "translate(0,0)" }, svg);
+    var L = el("g", { transform: narrow ? "translate(" + ((RW - 110) / 2) + ",0)" : "translate(0,0)" }, svg);
     svgText(L, 0, f + 1, "Drawn in λ", { "font-size": f, "font-weight": 600 });
     var lx = 18 + 2 * s;
     var lc = el("g", { transform: "translate(" + lx + "," + base + ") scale(" + s + "," + (-s) + ")" }, L);
@@ -239,18 +241,19 @@
     svgText(L, o2[0] + 2, o2[1] + f * 0.35, "OUT", { "font-size": f, "font-weight": 600 });
     svgText(L, at(12, 0)[0], base + f + 4, "28λ × 46λ", { "font-size": f, "text-anchor": "middle", fill: "var(--ink-soft)" });
 
-    // Right panel: true size in micrometres
-    var R = el("g", { transform: narrow ? "translate(0,186)" : "translate(118,0)" }, svg);
+    // Right panel: true size in micrometres, next to a Tiny Tapeout tile (160 x 100 um)
+    var R = el("g", { transform: narrow ? "translate(0,188)" : "translate(118,0)" }, svg);
     svgText(R, 0, f + 1, "True size, in µm", { "font-size": f, "font-weight": 600 });
-    el("rect", { x: 95, y: f + 6, width: 60, height: base - f - 6, fill: "var(--ink-faint)", "fill-opacity": 0.28 }, R);
-    el("rect", { x: 155, y: f + 6, width: 60, height: base - f - 6, fill: "var(--ink-faint)", "fill-opacity": 0.12 }, R);
-    svgText(R, 98, f * 2 + 8, "human hair,", { "font-size": f, fill: "var(--ink-soft)" });
-    svgText(R, 98, f * 3 + 10, "60–120 µm wide", { "font-size": f, fill: "var(--ink-soft)" });
+    var tx = RW - 162;
+    el("rect", { x: tx, y: base - 100, width: 160, height: 100, fill: "var(--l-implant)", "fill-opacity": 0.12, stroke: "var(--ink-soft)", "stroke-width": 0.8, "stroke-dasharray": "4 3" }, R);
+    svgText(R, tx + 4, base - 100 + f + 3, "Tiny Tapeout tile,", { "font-size": f, fill: "var(--ink-soft)" });
+    svgText(R, tx + 4, base - 100 + 2 * f + 5, "160 × 100 µm", { "font-size": f, fill: "var(--ink-soft)" });
     var cell = el("g", {}, R);
     inverterLayout(cell);
-    el("rect", { x: 5, y: base + 6, width: 10, height: 2, fill: "var(--ink)" }, R);
-    svgText(R, 18, base + 8.5, "10 µm", { "font-size": f, fill: "var(--ink)", "dominant-baseline": "auto" });
-    el("line", { x1: 0, y1: base, x2: 215, y2: base, stroke: "var(--rule)", "stroke-width": 0.6 }, R);
+    var inset = el("g", {}, R);
+    el("rect", { x: 5, y: base + 8, width: 10, height: 2, fill: "var(--ink)" }, R);
+    svgText(R, 18, base + 10.5, "10 µm", { "font-size": f });
+    el("line", { x1: 0, y1: base, x2: RW, y2: base, stroke: "var(--rule)", "stroke-width": 0.6 }, R);
 
     var controls = html("div", { class: "controls" }, root);
     var out = html("div", { class: "readout", role: "status" }, root);
@@ -261,6 +264,16 @@
       var p = procs[i], lam = p.lambda;
       var cellW = 28 * lam, cellH = 46 * lam;
       cell.setAttribute("transform", "translate(" + (5 + 2 * lam) + "," + base + ") scale(" + lam + "," + (-lam) + ")");
+      while (inset.firstChild) inset.removeChild(inset.firstChild);
+      if (cellW < 20) {
+        // the true-size cell is a speck: show an enlarged copy beside it
+        var k = Math.round(80 / cellH), il = lam * k, ix = 30;
+        var ig = el("g", { transform: "translate(" + (ix + 2 * il) + "," + base + ") scale(" + il + "," + (-il) + ")" }, inset);
+        inverterLayout(ig);
+        el("rect", { x: 5 - 1, y: base - cellH - 1, width: cellW + 2, height: cellH + 2, fill: "none", stroke: "var(--accent)", "stroke-width": 0.8 }, inset);
+        el("line", { x1: 5 + cellW + 1, y1: base - cellH - 1, x2: ix, y2: base - 46 * il, stroke: "var(--accent)", "stroke-width": 0.6, "stroke-dasharray": "2 2" }, inset);
+        svgText(inset, ix, base - 46 * il - 4, "enlarged ×" + k, { "font-size": f, fill: "var(--accent)", "font-weight": 600 });
+      }
       mark(i);
       var perMm2 = Math.floor(1e6 / (cellW * cellH));
       out.textContent = p.label + ": λ = " + lam + " µm, so a 2λ gate is " + trim(2 * lam, 2) + " µm long. This cell is " +
@@ -321,7 +334,7 @@
       ["Via width", 2, 2, 3],
       ["Gap between wells at different voltages", 9, 18, 18],
     ];
-    var sets = [["SCMOS", "var(--ink-faint)", -8], ["SUBM", "var(--l-metal)", 0], ["DEEP", "var(--accent)", 8]];
+    var sets = [["SCMOS", "var(--ink-soft)", -8], ["SUBM", "var(--l-metal)", 0], ["DEEP", "var(--accent)", 8]];
     var maxV = 5;
     var W, H, X, rowY, fsz, top;
     if (narrow) {
@@ -403,7 +416,7 @@
     var FILL = {
       contact: { fill: "var(--l-contact)", op: 0.85, text: "var(--bg)" },
       surround: { fill: "var(--l-metal)", op: 0.5, text: "var(--ink)" },
-      gap: { fill: "var(--bg)", op: 1, text: "var(--ink)" },
+      gap: { fill: "none", op: 1, text: "var(--ink)" },
     };
     bars.forEach(function (b, bi) {
       var y = top + bi * blockH;
@@ -427,7 +440,7 @@
       svgText(svg, x + 8, by + barH / 2 + fsz * 0.35, b.total, { "font-size": fsz * 1.05, "font-weight": 700 });
     });
     var lg = html("div", { class: "legend" }, root);
-    [["half a contact hole", "var(--l-contact)"], ["metal surrounding the contact", "var(--l-metal)"], ["gap between the two metal wires", "var(--bg)"]].forEach(function (l, i) {
+    [["half a contact hole", "var(--l-contact)"], ["metal surrounding the contact", "var(--l-metal)"], ["gap between the two metal wires", "transparent"]].forEach(function (l, i) {
       html("span", { class: i === 2 ? "gap" : "", style: "--c:" + l[1] }, lg, l[0]);
     });
   }
@@ -445,6 +458,7 @@
     try { item.f(root, item.narrow, item.state); } catch (e) { console.error(e); }
   }
   function init() {
+    document.documentElement.classList.add("js");
     [].forEach.call(document.querySelectorAll("[data-diagram]"), function (root) {
       var f = REGISTRY[root.getAttribute("data-diagram")];
       if (!f || root.dataset.ready) return;
