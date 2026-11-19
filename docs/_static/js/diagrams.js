@@ -126,9 +126,13 @@
       var left = s > 0 ? oh - s : oh + s;
       if (left > 0) {
         var y1 = s > 0 ? top : diffY + diffH, y2 = y1 + left;
-        dimLine(dims, A.id, 10.2, y1, 10.2, y2, "", { color: "var(--ink-soft)", sw: 0.1 });
-        var ly0 = s > 0 ? Math.min((y1 + y2) / 2 + f * 0.35, diffY - 0.1) : Math.max((y1 + y2) / 2 + f * 0.35, diffY + diffH + f * 0.9);
-        svgText(dims, 9.8, ly0, "overhang " + left + "λ", { "font-size": f, "text-anchor": "end", fill: "var(--ink-soft)" });
+        if (left >= 1) dimLine(dims, A.id, 10.2, y1, 10.2, y2, "", { color: "var(--ink-soft)", sw: 0.1 });
+        else {
+          // too short for arrowheads: draw a bracket instead
+          el("path", { d: "M9.9," + y1 + " H10.2 V" + y2 + " H9.9", fill: "none", stroke: "var(--ink-soft)", "stroke-width": 0.1 }, dims);
+        }
+        var ly0 = s > 0 ? Math.min((y1 + y2) / 2 + f * 0.35, diffY - 0.3) : Math.max((y1 + y2) / 2 + f * 0.35, diffY + diffH + f * 1.0);
+        svgText(dims, 9.6, ly0, "overhang " + left + "λ", { "font-size": f, "text-anchor": "end", fill: "var(--ink-soft)" });
       }
       var gy = null, gh = 0;
       if (top > diffY) { gy = diffY; gh = Math.min(top, diffY + diffH) - diffY; }
