@@ -210,7 +210,7 @@ h1:hover a.headerlink, h2:hover a.headerlink, h3:hover a.headerlink { visibility
 }
 @media print {
   @page { size: A4; margin: 13mm 15mm 14mm; }
-  .topbar, .progress, .toc-rail, .toc-drop, .controls, .diagram .readout, .site-footer, a.headerlink { display: none !important; }
+  .topbar, .progress, .toc-rail, .toc-drop, .controls, .site-footer, a.headerlink { display: none !important; }
   html, body { background: #fff; }
   body { font-size: 9.6pt; line-height: 1.4; }
   .page { display: block; padding: 0; }
@@ -224,9 +224,18 @@ h1:hover a.headerlink, h2:hover a.headerlink, h3:hover a.headerlink { visibility
   .wide { width: auto; left: 0; transform: none; }
   .article figure, .article figure.fig { margin: 8pt 0; break-inside: avoid; }
   .diagram { padding: 4pt; border-radius: 3px; }
-  .diagram svg { max-height: 44mm !important; }
-  .diagram[data-diagram="drift"] svg { max-height: 56mm !important; }
-  .diagram[data-diagram="misalign"] svg, .diagram[data-diagram="pitch"] svg { max-height: 40mm !important; }
+  /* Heights chosen so the smallest label in each drawing prints at about 7 pt. */
+  .diagram svg { max-height: 60mm !important; }
+  .diagram[data-diagram="misalign"] svg { max-height: 48mm !important; }
+  .diagram[data-diagram="rulebook"] svg { max-height: 58mm !important; }
+  .diagram[data-diagram="shrink"] svg { max-height: 82mm !important; }
+  .diagram[data-diagram="wafer"] svg { max-height: 56mm !important; }
+  .diagram[data-diagram="drift"] svg { max-height: 72mm !important; }
+  .diagram[data-diagram="pitch"] svg { max-height: 50mm !important; }
+  /* The readout names the state that was printed; the rulebook's rule list gives every value. */
+  .diagram .readout { font-size: 8pt; min-height: 0; margin-top: 3pt; }
+  .diagram[data-diagram="rulebook"] .controls { display: flex !important; margin-top: 4pt; }
+  .diagram[data-diagram="rulebook"] button.chip { font-size: 7.5pt; min-height: 0; padding: 1pt 5pt; }
   .article figure.wide { display: block; }
   .article figcaption, .legend { font-size: 8pt; margin-top: 3pt; line-height: 1.35; }
   .legend span::before { width: 8px; height: 8px; }
@@ -307,7 +316,8 @@ h1:hover a.headerlink, h2:hover a.headerlink, h3:hover a.headerlink { visibility
 @media (min-width: 1100px) {
   .wide { left: 0; transform: none; width: min(var(--wide), calc(50vw + 195px)); }
 }
-@media (max-width: 559px) { .diagram[data-diagram] svg { max-height: none; } }
+/* Narrow layouts (chosen per diagram in diagrams.js) are tall by design: no height cap, but no wider than a phone column. */
+.diagram.narrow svg { max-height: none; max-width: 480px; margin: 0 auto; }
 @media (max-width: 760px) {
   .article table.numeric td:first-child, .article table.numeric td.na { white-space: normal; }
 }

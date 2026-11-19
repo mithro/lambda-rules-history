@@ -90,7 +90,7 @@
   function misalign(root, narrow, st) {
     if (st.overhang === undefined) { st.overhang = 2; st.shift = 0; }
     var W = 24, H = 14, f = narrow ? 1.25 : 0.9;
-    var svg = el("svg", { viewBox: "-0.5 -0.5 " + (W + 1) + " " + (H + 1), role: "img", "aria-label": "Transistor layout with adjustable mask misalignment" }, root);
+    var svg = el("svg", { viewBox: "-0.5 -0.5 " + (W + 1) + " " + (H + 1 + f * 1.3), role: "img", "aria-label": "Transistor layout with adjustable mask misalignment" }, root);
     var A = arrowDefs(svg, 3);
     var pat = "hatch" + (++uid);
     var p = el("pattern", { id: pat, patternUnits: "userSpaceOnUse", width: 0.7, height: 0.7, patternTransform: "rotate(45)" }, A.defs);
@@ -105,7 +105,7 @@
     var poly = rect(g, "poly", 11, 0, 2, 0);
     var gap = el("rect", { fill: "url(#" + pat + ")", stroke: "var(--bad)", "stroke-width": 0.12, x: 10.6, width: 2.8, visibility: "hidden" }, g);
     var dims = el("g", {}, g);
-    svgText(g, 0.2, H - 0.3, "grid square = λ × λ", { "font-size": f * 0.95, fill: "var(--ink-soft)" });
+    svgText(g, 0, H + f * 1.15, "grid square = λ × λ", { "font-size": f * 0.95, fill: "var(--ink-soft)" });
 
     var controls = html("div", { class: "controls" }, root);
     var l1 = html("label", {}, controls, "Mask misalignment ");
@@ -122,8 +122,10 @@
       poly.setAttribute("y", top);
       poly.setAttribute("height", bot - top);
       while (dims.firstChild) dims.removeChild(dims.firstChild);
-      dimLine(dims, A.id, 10.2, top, 10.2, top + oh, "", { color: "var(--ink-soft)", sw: 0.1 });
-      svgText(dims, 9.8, top + oh / 2 + f * 0.35, "overhang " + oh + "λ", { "font-size": f, "text-anchor": "end", fill: "var(--ink-soft)" });
+      // Dimension the overhang that moves away from the diffusion, so its label never sits on "source".
+      var oy0 = s > 0 ? bot - oh : top;
+      dimLine(dims, A.id, 10.2, oy0, 10.2, oy0 + oh, "", { color: "var(--ink-soft)", sw: 0.1 });
+      svgText(dims, 9.8, oy0 + oh / 2 + f * 0.35, "overhang " + oh + "λ", { "font-size": f, "text-anchor": "end", fill: "var(--ink-soft)" });
       var gy = null, gh = 0;
       if (top > diffY) { gy = diffY; gh = Math.min(top, diffY + diffH) - diffY; }
       else if (bot < diffY + diffH) { gy = Math.max(bot, diffY); gh = diffY + diffH - gy; }
@@ -174,7 +176,8 @@
       polyW: [[11, 12, 13, 12, "2λ", 0, -0.5]], polyS: [[13, 14, 15, 14, "2λ", 0, -0.5]],
       metalW: [[20, 12, 23, 12, "3λ", 0, -0.5]], metalS: [[23, 14, 26, 14, "3λ", 0, -0.5]],
       overhang: [[ox + 5.6, oy + 8, ox + 5.6, oy + 10, "2λ", 1.5, 0.45], [ox + 5.6, oy + 4, ox + 5.6, oy + 6, "2λ", 1.5, 0.45]],
-      sd: [[ox + 1, oy + 9, ox + 3, oy + 9, "2λ", 0, fs * 0.95]],
+      // narrow: label left of the line, clear of the "contact" heading below
+      sd: [[ox + 1, oy + 9, ox + 3, oy + 9, "2λ", narrow ? -2.7 : 0, narrow ? 0.5 : fs * 0.95]],
       contact: [[ox + 2, oy + 16.8, ox + 4, oy + 16.8, "2λ", 0, fs * 0.95]],
       surround: [[ox + 5.8, oy + 12, ox + 5.8, oy + 13, "1λ", 1.5, 0.45]],
     };
@@ -270,7 +273,7 @@
   /* 4. Multi-project wafer                                              */
   /* ------------------------------------------------------------------ */
   function wafer(root, narrow) {
-    var VW = narrow ? 100 : 200, VH = narrow ? 200 : 100, f = narrow ? 4.4 : 3.8;
+    var VW = narrow ? 100 : 200, VH = narrow ? 200 : 100, f = 4.4;
     var svg = svgRoot(root, VW, VH, "A wafer carrying one design repeated, beside a wafer whose every exposure carries four different designs");
     var palette = ["var(--l-poly)", "var(--l-metal)", "var(--l-diff)", "var(--l-implant)"];
     function drawWafer(cx, cy, label, multi) {
@@ -318,7 +321,7 @@
       ["Via width", 2, 2, 3],
       ["Gap between wells at different voltages", 9, 18, 18],
     ];
-    var sets = [["SCMOS", "var(--ink-faint)", -6], ["SUBM", "var(--l-metal)", 0], ["DEEP", "var(--accent)", 6]];
+    var sets = [["SCMOS", "var(--ink-faint)", -8], ["SUBM", "var(--l-metal)", 0], ["DEEP", "var(--accent)", 8]];
     var maxV = 5;
     var W, H, X, rowY, fsz, top;
     if (narrow) {
@@ -343,7 +346,7 @@
     rows.forEach(function (r, i) {
       var y0 = rowY(i), h = narrow ? 58 : 30;
       if (i % 2 === 0) el("rect", { x: 0, y: y0, width: W, height: h, fill: "var(--ink-faint)", "fill-opacity": 0.07 }, svg);
-      var dotsY = narrow ? y0 + 38 : y0 + h / 2;
+      var dotsY = narrow ? y0 + 40 : y0 + h / 2;
       var off = r[1] > maxV;
       var label = r[0];
       if (narrow) svgText(svg, 8, y0 + 19, label, { "font-size": fsz });
@@ -357,7 +360,7 @@
         el("path", { d: "M" + (X(maxV) + 10) + "," + (dotsY - 5) + " l8,5 l-8,5 z", fill: "var(--ink-soft)" }, svg);
       } else {
         [1, 2, 3].forEach(function (k) {
-          var c = el("circle", { cx: X(r[k]), cy: dotsY + sets[k - 1][2] * (narrow ? 1.1 : 1), r: narrow ? 5.5 : 4.5, fill: sets[k - 1][1], stroke: "var(--bg-soft)", "stroke-width": 1 }, svg);
+          var c = el("circle", { cx: X(r[k]), cy: dotsY + sets[k - 1][2] * (narrow ? 1.25 : 1), r: narrow ? 5.5 : 4.5, fill: sets[k - 1][1], stroke: "var(--bg-soft)", "stroke-width": 1 }, svg);
           el("title", {}, c).textContent = sets[k - 1][0] + ": " + r[k] + "λ";
         });
       }
@@ -382,7 +385,7 @@
       { title: "The same process’s micron rules", total: "2.75 µm", v: [0.375, 0.5, 1.0, 0.5, 0.375] },
     ];
     var fsz = narrow ? 15.5 : 13;
-    var W = narrow ? 400 : 800, x0 = narrow ? 24 : 4, plotW = narrow ? 290 : 640;
+    var W = narrow ? 400 : 800, x0 = narrow ? 24 : 20, plotW = narrow ? 290 : 640;
     var k = plotW / 4; // units per micrometre
     var barH = narrow ? 34 : 30;
     var blockH = narrow ? 120 : 92;
@@ -430,12 +433,15 @@
   }
 
   var REGISTRY = { misalign: misalign, rulebook: rulebook, shrink: shrink, wafer: wafer, drift: drift, pitch: pitch };
+  // Narrowest diagram box (px, padding included) at which each wide layout keeps every label >= 11 px.
+  var MIN_WIDE = { misalign: 560, rulebook: 600, shrink: 730, wafer: 560, drift: 730, pitch: 712 };
   var live = [];
-  function isNarrow(root) { return root.clientWidth < 560; }
+  function isNarrow(root) { return root.clientWidth < (MIN_WIDE[root.getAttribute("data-diagram")] || 560); }
   function build(item) {
     var root = item.root;
     while (root.firstChild) root.removeChild(root.firstChild);
     item.narrow = isNarrow(root);
+    root.classList.toggle("narrow", item.narrow);
     try { item.f(root, item.narrow, item.state); } catch (e) { console.error(e); }
   }
   function init() {

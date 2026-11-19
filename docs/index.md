@@ -248,7 +248,7 @@ The same HP 0.8 µm process had two values of λ, 0.5 µm under the original rul
 <figure class="fig wide" id="fig-pitch">
   <div class="diagram" data-diagram="pitch"></div>
   <noscript><p>Contacted metal pitch at λ = 0.5 µm: λ rules give half a contact 0.5, surround 0.5, metal gap 1.5, surround 0.5, half a contact 0.5, total 3.5 µm; the process's own micron rules give 0.375, 0.5, 1.0, 0.5, 0.375, total 2.75 µm.</p></noscript>
-  <figcaption><strong>Theory versus practice: λ rules spend extra space.</strong> The distance between two contacted metal wires, built from its parts, under λ rules (λ = 0.5 µm) and under the same process's own micron rules, drawn to the same scale. The micron rules allow smaller contacts and a narrower metal gap. Values from the breakdown rows of <a href="https://www.csl.cornell.edu/courses/ece6745/handouts/ece6745-T04-methodology-custom.pdf">Batten, Cornell ECE 6745, slide 21</a> (after Weste, table 3.2), whose summary row gives the λ total as 8λ = 4 µm.</figcaption>
+  <figcaption><strong>Theory versus practice: λ rules spend extra space.</strong> The distance between two contacted metal wires, built from its parts, under λ rules (λ = 0.5 µm) and under the same process's own micron rules, drawn to the same scale. The micron rules allow smaller contacts and a narrower metal gap. Values from <a href="https://www.csl.cornell.edu/courses/ece6745/handouts/ece6745-T04-methodology-custom.pdf">Batten, Cornell ECE 6745, slide 21</a> (after Weste, table 3.2), whose totals are 7λ = 3.5 µm and 2.75 µm.</figcaption>
 </figure>
 ```
 
