@@ -122,10 +122,14 @@
       poly.setAttribute("y", top);
       poly.setAttribute("height", bot - top);
       while (dims.firstChild) dims.removeChild(dims.firstChild);
-      // Dimension the overhang that moves away from the diffusion, so its label never sits on "source".
-      var oy0 = s > 0 ? bot - oh : top;
-      dimLine(dims, A.id, 10.2, oy0, 10.2, oy0 + oh, "", { color: "var(--ink-soft)", sw: 0.1 });
-      svgText(dims, 9.8, oy0 + oh / 2 + f * 0.35, "overhang " + oh + "λ", { "font-size": f, "text-anchor": "end", fill: "var(--ink-soft)" });
+      // Dimension the overhang on the side that is shrinking, and show its live value.
+      var left = s > 0 ? oh - s : oh + s;
+      if (left > 0) {
+        var y1 = s > 0 ? top : diffY + diffH, y2 = y1 + left;
+        dimLine(dims, A.id, 10.2, y1, 10.2, y2, "", { color: "var(--ink-soft)", sw: 0.1 });
+        var ly0 = s > 0 ? Math.min((y1 + y2) / 2 + f * 0.35, diffY - 0.1) : Math.max((y1 + y2) / 2 + f * 0.35, diffY + diffH + f * 0.9);
+        svgText(dims, 9.8, ly0, "overhang " + left + "λ", { "font-size": f, "text-anchor": "end", fill: "var(--ink-soft)" });
+      }
       var gy = null, gh = 0;
       if (top > diffY) { gy = diffY; gh = Math.min(top, diffY + diffH) - diffY; }
       else if (bot < diffY + diffH) { gy = Math.max(bot, diffY); gh = diffY + diffH - gy; }
@@ -151,7 +155,7 @@
   function rulebook(root, narrow, st) {
     var rules = JSON.parse(root.getAttribute("data-rules"));
     if (st.key === undefined) st.key = rules[0].key;
-    var f = narrow ? 1.2 : 0.85;
+    var f = narrow ? 1.2 : 0.93;
     // strips occupy x 0..30, y 0..18; device block is drawn at (ox, oy)
     var ox = narrow ? 10 : 32, oy = narrow ? 20.5 : 0;
     var W = narrow ? 30 : 42, H = narrow ? 39.5 : 21;
@@ -276,7 +280,7 @@
       }
       mark(i);
       var perMm2 = Math.floor(1e6 / (cellW * cellH));
-      out.textContent = p.label + ": λ = " + lam + " µm, so a 2λ gate is " + trim(2 * lam, 2) + " µm long. This cell is " +
+      out.textContent = p.label + ": λ = " + lam + " µm, so a minimum 2λ gate is drawn " + trim(2 * lam, 2) + " µm long" + (p.node && 2 * lam > p.node ? ", longer than the process name (see the SCMOS section)" : "") + ". This cell is " +
         trim(cellW, 1) + " × " + trim(cellH, 1) + " µm; about " + perMm2.toLocaleString("en-GB") + " fit in 1 mm².";
     }
     pick(st.i);
@@ -286,7 +290,7 @@
   /* 4. Multi-project wafer                                              */
   /* ------------------------------------------------------------------ */
   function wafer(root, narrow) {
-    var VW = narrow ? 100 : 200, VH = narrow ? 200 : 100, f = 4.4;
+    var VW = narrow ? 100 : 200, VH = narrow ? 200 : 100, f = 4.6;
     var svg = svgRoot(root, VW, VH, "A wafer carrying one design repeated, beside a wafer whose every exposure carries four different designs");
     var palette = ["var(--l-poly)", "var(--l-metal)", "var(--l-diff)", "var(--l-implant)"];
     function drawWafer(cx, cy, label, multi) {

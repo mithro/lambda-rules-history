@@ -314,6 +314,16 @@ html:not(.js) figure .legend { display: none; }
   .article h2 { font-size: 14pt; }
 }
 
+
+/* ---------- Round 3 ---------- */
+@media (max-width: 760px) {
+  .article table.cards caption { display: block; width: auto; }
+  .article table.numeric { font-size: 13.5px; }
+  .article table.numeric td:first-child { white-space: normal; min-width: 6.5em; }
+}
+.article a.footnote-reference { padding: 14px .12em; margin: -14px 0; }
+.article a.headerlink { display: inline-block; min-height: 40px; min-width: 24px; line-height: 40px; vertical-align: middle; }
+
 @media print {
   @page { size: A4; margin: 13mm 15mm 14mm; }
   .topbar, .progress, .toc-rail, .toc-drop, .controls, .site-footer, a.headerlink { display: none !important; }
