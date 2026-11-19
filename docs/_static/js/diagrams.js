@@ -227,16 +227,16 @@
     rect(g, "metal", 0, 18, 5, 4);            // input
     [[7, 8], [15, 8], [7, 32], [15, 32], [2, 19]].forEach(function (c) { rect(g, "contact", c[0], c[1], 2, 2); });
   }
-  function shrink(root, narrow, st) {
+  function shrink(root, narrow) {
     var procs = JSON.parse(root.getAttribute("data-procs"));
-    if (st.i === undefined) st.i = 0;
-    var f = narrow ? 9.2 : 6;
+    var f = narrow ? 11 : 7.6;
     var base = 160, s = 2.7;
-    var RW = 100; // right panel width in micrometres (fits the 84 x 138 um cell at lambda = 3 um)
-    var VW = 118 + RW, VH = 184; // panels side by side at every width; narrow only enlarges the labels
-    var svg = svgRoot(root, VW, VH, "An inverter drawn in lambda units, and the same drawing at true size for the chosen process next to a 10 micrometre scale bar");
+    var slotMin = narrow ? 26 : 20, gap = 6;
+    var RW = 8 + procs.reduce(function (t, p) { return t + Math.max(28 * p.lambda, slotMin) + gap; }, 0);
+    var VW = narrow ? RW : 118 + RW, VH = narrow ? 192 + base + f + 8 : base + 2 * f + 10;
+    var svg = svgRoot(root, VW, VH, "An inverter drawn in lambda units, and the same drawing at true size for six processes side by side");
     // Left panel: fixed lambda scale
-    var L = el("g", { transform: "translate(0,0)" }, svg);
+    var L = el("g", { transform: narrow ? "translate(" + ((RW - 110) / 2) + ",0)" : "translate(0,0)" }, svg);
     svgText(L, 0, f + 1, "Drawn in λ", { "font-size": f, "font-weight": 600 });
     var lx = 18 + 2 * s;
     var lc = el("g", { transform: "translate(" + lx + "," + base + ") scale(" + s + "," + (-s) + ")" }, L);
@@ -251,30 +251,22 @@
     svgText(L, o2[0] + 2, o2[1] + f * 0.35, "OUT", { "font-size": f, "font-weight": 600 });
     svgText(L, at(12, 0)[0], base + f + 4, "28λ × 46λ", { "font-size": f, "text-anchor": "middle", fill: "var(--ink-soft)" });
 
-    // Right panel: true size in micrometres, next to a 10 um scale bar
-    var R = el("g", { transform: "translate(118,0)" }, svg);
-    svgText(R, 0, f + 1, "True size, in µm", { "font-size": f, "font-weight": 600 });
-    var cell = el("g", {}, R);
-    inverterLayout(cell);
-    el("rect", { x: 5, y: base + 8, width: 10, height: 2, fill: "var(--ink)" }, R);
-    svgText(R, 18, base + 10.5, "10 µm", { "font-size": f });
+    // Right panel: every process side by side at one true scale (1 unit = 1 um)
+    var R = el("g", { transform: narrow ? "translate(0,192)" : "translate(118,0)" }, svg);
+    svgText(R, 0, f + 1, "True size; process in µm below each cell", { "font-size": f, "font-weight": 600 });
+    var x = 4;
+    procs.forEach(function (p) {
+      var lam = p.lambda, cw = 28 * lam, slot = Math.max(cw, slotMin);
+      var cx = x + (slot - cw) / 2;
+      var cg = el("g", { transform: "translate(" + (cx + 2 * lam) + "," + base + ") scale(" + lam + "," + (-lam) + ")" }, R);
+      inverterLayout(cg);
+      var lab = svgText(R, x + slot / 2, base + f + 3, p.short.replace(/\s*µm$/, ""), { "font-size": f, "text-anchor": "middle", "font-weight": 600 });
+      el("title", {}, lab).textContent = p.label + ": λ = " + lam + " µm, cell " + (Math.round(cw * 10) / 10) + " × " + (Math.round(46 * lam * 10) / 10) + " µm";
+      x += slot + gap;
+    });
     el("line", { x1: 0, y1: base, x2: RW, y2: base, stroke: "var(--rule)", "stroke-width": 0.6 }, R);
-
-    var controls = html("div", { class: "controls" }, root);
-    var out = html("div", { class: "readout", role: "status" }, root);
-    var mark = chipRow(controls, procs.map(function (p) { return p.short; }), st.i, pick);
-    function trim(n, d) { return n.toFixed(d).replace(/\.?0+$/, ""); }
-    function pick(i) {
-      st.i = i;
-      var p = procs[i], lam = p.lambda;
-      var cellW = 28 * lam, cellH = 46 * lam;
-      cell.setAttribute("transform", "translate(" + (5 + 2 * lam) + "," + base + ") scale(" + lam + "," + (-lam) + ")");
-      mark(i);
-      var perMm2 = Math.floor(1e6 / (cellW * cellH));
-      out.textContent = p.label + ": λ = " + lam + " µm, so a minimum 2λ gate is drawn " + trim(2 * lam, 2) + " µm long" + (p.node && 2 * lam > p.node ? ", longer than the process name (see the SCMOS section)" : "") + ". This cell is " +
-        trim(cellW, 1) + " × " + trim(cellH, 1) + " µm; about " + perMm2.toLocaleString("en-GB") + " fit in 1 mm².";
-    }
-    pick(st.i);
+    el("rect", { x: RW - 22, y: base - 40, width: 10, height: 2, fill: "var(--ink)" }, R);
+    svgText(R, RW - 17, base - 44, "10 µm", { "font-size": f, "text-anchor": "middle" });
   }
 
   /* ------------------------------------------------------------------ */
@@ -288,25 +280,25 @@
   // Metal1 width and space 0.23 (Mn.1, Mn.2a), area 0.1444 (Mn.3).
   // Implant (Nplus/Pplus) layers are left out, as in the lambda drawing.
   function gfInverter(g) {
-    var sw = { "stroke-width": 0.0135 }; // same on-screen edge width as the lambda drawing
-    rect(g, "well", 0.17, 1.47, 2.02, 1.59, sw);
+    var sw = { "stroke-width": 0.021 }; // same on-screen edge width as the lambda drawing
+    rect(g, "well", 0.17, 1.95, 2.02, 2.37, sw);
     rect(g, "metal", 0, 0, 2.2, 0.46, sw);          // GND
-    rect(g, "metal", 0, 2.6, 2.2, 0.46, sw);        // VDD
-    rect(g, "diff", 0.6, 0.68, 1.16, 0.36, sw);     // n COMP
-    rect(g, "diff", 0.6, 1.9, 1.16, 0.6, sw);       // p COMP
-    rect(g, "poly", 1.04, 0.46, 0.28, 2.26, sw);    // gate
-    rect(g, "poly", 0, 1.14, 1.32, 0.36, sw);       // input strip
+    rect(g, "metal", 0, 3.86, 2.2, 0.46, sw);       // VDD
+    rect(g, "diff", 0.6, 0.68, 1.16, 0.84, sw);     // n COMP, W = 0.84 (6 lambda at 0.14)
+    rect(g, "diff", 0.6, 2.38, 1.16, 1.4, sw);      // p COMP, W = 1.40 (10 lambda at 0.14)
+    rect(g, "poly", 1.04, 0.46, 0.28, 3.54, sw);    // gate, L = 0.28
+    rect(g, "poly", 0, 1.62, 1.32, 0.36, sw);       // input strip
     rect(g, "metal", 0.61, 0, 0.34, 1.03, sw);      // GND to n source
-    rect(g, "metal", 0.61, 1.91, 0.34, 1.15, sw);   // VDD to p source
-    rect(g, "metal", 1.41, 0.69, 0.34, 1.56, sw);   // output
-    rect(g, "metal", 0.01, 1.09, 0.34, 0.46, sw);   // input
-    [[0.67, 0.75], [1.47, 0.75], [0.67, 1.97], [1.47, 1.97], [0.07, 1.21]].forEach(function (c) { rect(g, "contact", c[0], c[1], 0.22, 0.22, sw); });
+    rect(g, "metal", 0.61, 2.39, 0.34, 1.93, sw);   // VDD to p source
+    rect(g, "metal", 1.41, 0.69, 0.34, 2.04, sw);   // output
+    rect(g, "metal", 0.01, 1.57, 0.34, 0.46, sw);   // input
+    [[0.67, 0.75], [1.47, 0.75], [0.67, 2.45], [1.47, 2.45], [0.07, 1.69]].forEach(function (c) { rect(g, "contact", c[0], c[1], 0.22, 0.22, sw); });
   }
   function exact(root, narrow) {
-    var f = narrow ? 7 : 5.2, k = 30; // 30 units per micrometre, the same scale for both cells
+    var f = narrow ? 7 : 5.2, k = 19; // 19 units per micrometre, the same scale for both cells
     var VW = 200, VH = 172, base = 146;
-    var svg = svgRoot(root, VW, VH, "The inverter drawn with lambda = 0.09 micrometres beside the same circuit drawn to GF180MCU rules, at the same scale");
-    var lam = 0.09, lw = 28 * lam, lh = 46 * lam, gw = 2.2, gh = 3.06;
+    var svg = svgRoot(root, VW, VH, "The inverter drawn with lambda = 0.14 micrometres beside the same circuit drawn to GF180MCU rules, at the same scale");
+    var lam = 0.14, lw = 28 * lam, lh = 46 * lam, gw = 2.2, gh = 4.32; // smallest lambda whose 2-lambda gate meets GF180MCU PL.2 (0.28 um)
     var xl = 12, xg = 112;
     // lambda cell (offset so the well's -2 lambda edge sits at xl)
     var gl = el("g", { transform: "translate(" + (xl + 2 * lam * k) + "," + base + ") scale(" + (lam * k) + "," + (-lam * k) + ")" }, svg);
@@ -317,14 +309,14 @@
     gfInverter(gg);
     el("line", { x1: 0, y1: base, x2: VW, y2: base, stroke: "var(--rule)", "stroke-width": 0.5 }, svg);
     var top = base - lh * k - 4;
-    svgText(svg, xl, top - f - 2, "λ rules, λ = 0.09 µm", { "font-size": f, "font-weight": 600 });
+    svgText(svg, xl, top - f - 2, "λ rules, λ = 0.14 µm", { "font-size": f, "font-weight": 600 });
     svgText(svg, xg, top - f - 2, "GF180MCU rules", { "font-size": f, "font-weight": 600 });
     svgText(svg, xl, top, "28λ × 46λ", { "font-size": f, fill: "var(--ink-soft)" });
     svgText(svg, xg, top, "dashed: the λ cell", { "font-size": f, fill: "var(--ink-soft)" });
-    svgText(svg, xl, base + f + 3, "2.52 × 4.14 µm", { "font-size": f });
-    svgText(svg, xl, base + 2 * f + 5, "area 10.4 µm²", { "font-size": f, "font-weight": 600 });
-    svgText(svg, xg, base + f + 3, "2.20 × 3.06 µm", { "font-size": f });
-    svgText(svg, xg, base + 2 * f + 5, "area 6.7 µm² (−35%)", { "font-size": f, "font-weight": 600 });
+    svgText(svg, xl, base + f + 3, "3.92 × 6.44 µm", { "font-size": f });
+    svgText(svg, xl, base + 2 * f + 5, "area 25.2 µm²", { "font-size": f, "font-weight": 600 });
+    svgText(svg, xg, base + f + 3, "2.20 × 4.32 µm", { "font-size": f });
+    svgText(svg, xg, base + 2 * f + 5, "area 9.5 µm² (−62%)", { "font-size": f, "font-weight": 600 });
     // 1 um scale bar in the empty top of the dashed outline
     var sy = base - lh * k + 8;
     el("rect", { x: xg + 6, y: sy, width: k, height: 1.6, fill: "var(--ink)" }, svg);
@@ -384,42 +376,41 @@
       ["Poly width", 2, 2, 2],
       ["Metal 1 width", 3, 3, 3],
     ];
-    var sets = ["SUBM (sub-micron)", "DEEP (0.25 µm and below)"];
-    if (st.i === undefined) st.i = 1;
-    var fsz = narrow ? 15 : 13, rowH = narrow ? 50 : 27, top = narrow ? 58 : 50;
+    // Small multiples, not a toggle: both sub-micron sets are drawn for every rule.
+    var sets = [{ name: "SUBM", fill: "var(--ink-faint)", op: 0.75 }, { name: "DEEP", fill: "var(--accent)", op: 0.9 }];
+    var fsz = narrow ? 15 : 13, barH = narrow ? 16 : 14, rowH = narrow ? 70 : 42, top = narrow ? 58 : 50;
     var W = narrow ? 400 : 820, H = top + rows.length * rowH + 34;
     var x0 = narrow ? 14 : 290, x1 = narrow ? 262 : 640; // x for ratio 1 and ratio 2
     function X(r) { return x0 + (r - 1) * (x1 - x0); }
-    var svg = svgRoot(root, W, H, "Bar chart of how many times larger, measured in lambda, ten MOSIS rules became in the sub-micron rule sets than in the original SCMOS rules");
+    var svg = svgRoot(root, W, H, "Paired bar chart of how many times larger, measured in lambda, ten MOSIS rules became in the SUBM and DEEP rule sets than in the original SCMOS rules");
     var g = el("g", {}, svg);
-    var controls = html("div", { class: "controls" }, root);
-    var mark = chipRow(controls, ["SCMOS → SUBM", "SCMOS → DEEP"], st.i, draw);
-    function draw(k) {
-      st.i = k; mark(k);
-      while (g.firstChild) g.removeChild(g.firstChild);
-      svgText(g, 0, fsz + 4, "Growth of each rule, in λ, from SCMOS to " + (k ? "DEEP" : "SUBM"), { "font-size": fsz * 1.12, "font-weight": 600 });
-      svgText(g, 0, fsz * 2 + 12, "If λ had kept working, every bar would stay at ×1.", { "font-size": fsz, fill: "var(--ink-soft)" });
-      var plotTop = top - 6, plotBot = top + rows.length * rowH;
-      [1, 1.5, 2].forEach(function (r) {
-        el("line", { x1: X(r), y1: plotTop, x2: X(r), y2: plotBot, stroke: r === 1 ? "var(--ink-soft)" : "var(--rule)", "stroke-width": r === 1 ? 1.5 : 1 }, g);
-        svgText(g, X(r), H - 10, "×" + r, { "font-size": fsz, "text-anchor": "middle", fill: "var(--ink-soft)", "font-weight": r === 1 ? 600 : 400 });
-      });
-      rows.forEach(function (row, i) {
-        var y0 = top + i * rowH, v0 = row[1], v1 = row[2 + k], ratio = v1 / v0;
-        if (i % 2 === 0) el("rect", { x: 0, y: y0, width: W, height: rowH, fill: "var(--ink-faint)", "fill-opacity": 0.07 }, g);
-        var by = narrow ? y0 + 28 : y0 + 5, bh = narrow ? 16 : rowH - 10;
-        if (narrow) svgText(g, x0 + 8, y0 + 19, row[0], { "font-size": fsz }); // clear of the x1 axis line
-        else svgText(g, x0 - 12, y0 + rowH / 2 + fsz * 0.35, row[0], { "font-size": fsz, "text-anchor": "end" });
-        var txt = v0 + "λ → " + v1 + "λ" + (ratio === 1 ? ", unchanged" : " (×" + (Math.round(ratio * 100) / 100) + ")");
+    svgText(g, 0, fsz + 4, narrow ? "Growth of each rule, in λ, from SCMOS" : "Growth of each rule, in λ, from SCMOS to SUBM and to DEEP", { "font-size": fsz * 1.12, "font-weight": 600 });
+    svgText(g, 0, fsz * 2 + 12, "If λ had kept working, every bar would stay at ×1.", { "font-size": fsz, fill: "var(--ink-soft)" });
+    var plotTop = top - 6, plotBot = top + rows.length * rowH;
+    [1, 1.5, 2].forEach(function (r) {
+      el("line", { x1: X(r), y1: plotTop, x2: X(r), y2: plotBot, stroke: r === 1 ? "var(--ink-soft)" : "var(--rule)", "stroke-width": r === 1 ? 1.5 : 1 }, g);
+      svgText(g, X(r), H - 10, "×" + r, { "font-size": fsz, "text-anchor": "middle", fill: "var(--ink-soft)", "font-weight": r === 1 ? 600 : 400 });
+    });
+    rows.forEach(function (row, i) {
+      var y0 = top + i * rowH, v0 = row[1];
+      if (i % 2 === 0) el("rect", { x: 0, y: y0, width: W, height: rowH, fill: "var(--ink-faint)", "fill-opacity": 0.07 }, g);
+      if (narrow) svgText(g, x0 + 8, y0 + 19, row[0] + ", " + v0 + "λ", { "font-size": fsz }); // clear of the x1 axis line
+      else svgText(g, x0 - 12, y0 + rowH / 2 + fsz * 0.35, row[0] + ", " + v0 + "λ", { "font-size": fsz, "text-anchor": "end" });
+      sets.forEach(function (set, k) {
+        var v1 = row[2 + k], ratio = v1 / v0;
+        var by = (narrow ? y0 + 28 : y0 + 6) + k * (barH + 2);
+        var txt = set.name + " " + v1 + "λ" + (ratio === 1 ? ", unchanged" : " (×" + (Math.round(ratio * 100) / 100) + ")");
         if (ratio > 1) {
-          var bar = el("rect", { x: X(1), y: by, width: X(ratio) - X(1), height: bh, fill: "var(--accent)", "fill-opacity": 0.85 }, g);
-          el("title", {}, bar).textContent = row[0] + ": " + txt;
+          var bar = el("rect", { x: X(1), y: by, width: X(ratio) - X(1), height: barH, fill: set.fill, "fill-opacity": set.op }, g);
+          el("title", {}, bar).textContent = row[0] + ": " + v0 + "λ in SCMOS, " + v1 + "λ in " + set.name;
         }
         var tx = ratio > 1 ? X(ratio) + 8 : X(1) + 8;
-        svgText(g, tx, by + bh / 2 + fsz * 0.35, txt, { "font-size": fsz, "font-weight": ratio > 1 ? 600 : 400, fill: ratio > 1 ? "var(--ink)" : "var(--ink-soft)" });
+        svgText(g, tx, by + barH / 2 + fsz * 0.35, txt, { "font-size": fsz, "font-weight": ratio > 1 ? 600 : 400, fill: ratio > 1 ? "var(--ink)" : "var(--ink-soft)" });
       });
-    }
-    draw(st.i);
+    });
+    var lg = html("div", { class: "legend" }, root);
+    html("span", { style: "--c:var(--ink-faint)" }, lg, "SUBM (sub-micron)");
+    html("span", { style: "--c:var(--accent)" }, lg, "DEEP (deep sub-micron)");
   }
 
   /* ------------------------------------------------------------------ */
@@ -510,7 +501,7 @@
 
   var REGISTRY = { misalign: misalign, rulebook: rulebook, shrink: shrink, exact: exact, wafer: wafer, drift: drift, pitch: pitch };
   // Narrowest diagram box (px, padding included) at which each wide layout keeps every label >= 11 px.
-  var MIN_WIDE = { misalign: 560, rulebook: 600, shrink: 560, exact: 400, wafer: 560, drift: 730, pitch: 712 };
+  var MIN_WIDE = { misalign: 560, rulebook: 600, shrink: 640, exact: 400, wafer: 560, drift: 730, pitch: 712 };
   var live = [];
   function isNarrow(root) { return root.clientWidth < (MIN_WIDE[root.getAttribute("data-diagram")] || 560); }
   function build(item) {

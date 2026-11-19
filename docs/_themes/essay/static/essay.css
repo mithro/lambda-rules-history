@@ -327,7 +327,6 @@ html:not(.js) figure .legend { display: none; }
 
 /* ---------- λ, the design-rule unit, always in the accent colour ---------- */
 .lam { color: var(--accent); font-weight: 600; }
-.diagram[data-diagram="shrink"] svg { max-width: 560px; margin: 0 auto; }
 .diagram svg text tspan.lam, .diagram svg tspan.lam { fill: var(--accent); font-weight: 700; }
 .diagram button.chip[aria-pressed="true"] .lam, .article a .lam, .toc-rail a .lam, .toc-drop-panel a .lam { color: inherit; }
 .article h1 .lam { font-weight: inherit; }
@@ -356,7 +355,7 @@ html:not(.js) figure .legend { display: none; }
   .diagram[data-diagram="rulebook"] svg { max-height: 48mm !important; }
   .diagram[data-diagram="shrink"] svg { max-height: 66mm !important; }
   .diagram[data-diagram="wafer"] svg { max-height: 46mm !important; }
-  .diagram[data-diagram="drift"] svg { max-height: 62mm !important; }
+  .diagram[data-diagram="drift"] svg { max-height: 88mm !important; }
   .diagram[data-diagram="pitch"] svg { max-height: 50mm !important; }
   .diagram[data-diagram="exact"] svg { max-height: 72mm !important; }
   /* The readout names the state that was printed; the rulebook's rule list gives every value. */
@@ -374,7 +373,7 @@ html:not(.js) figure .legend { display: none; }
   .article ol.flow > li { padding: 3pt 6pt 3pt 24pt; }
   .article ol.flow > li::before { width: 13pt; height: 13pt; font-size: 8pt; left: 5pt; top: 3pt; }
   .article table.docutils { font-size: 8.8pt; margin: 6pt 0; }
-  .article table.docutils tr { break-inside: avoid; }
+  .article table.docutils tr, .article table.numeric { break-inside: avoid; }
   .article figure#fig-flow { break-inside: auto; }
   .article table caption { font-size: 8.5pt; }
   .article blockquote { margin: 8pt 0; }

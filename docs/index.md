@@ -1,57 +1,53 @@
 ---
 myst:
   html_meta:
-    "description": "How λ design rules let computer scientists design chips, made shared-wafer services such as MOSIS possible, and why they stopped working as processes shrank below a micron."
+    "description": "How λ design rules worked, what they cost in silicon area, how they let newcomers design chips for shared wafers, and why they stopped working below a micron."
 ---
 
 # Drawing chips in λ
 
 ```{rst-class} dek
-In 1977 Lynn Conway, working with Carver Mead, rewrote the rules of chip layout as multiples of one number, λ. For two decades that number let students and researchers design chips without ever visiting a factory. Then the physics of shrinking stopped cooperating.
+In 1977 chip-layout rules were rewritten as small whole multiples of one length, λ. Designers drew once in λ; each factory turned λ into microns. For two decades that traded silicon area for portability and simplicity, until shrinking stopped being uniform.
 ```
 
 ```{rst-class} byline
-Last updated 19 November 2026 · about 20 minutes to read
+Last updated 19 November 2026 · about 18 minutes to read
 ```
 
 ```{rst-class} lead
-Every chip starts as a drawing: coloured rectangles, one colour per manufacturing step, that are turned into the [photomasks](https://en.wikipedia.org/wiki/Photomask) used to print the circuit onto silicon. Sending that finished drawing off to be made is called the [tape-out](https://en.wikipedia.org/wiki/Tape-out). The drawing has to obey **design rules**: minimum widths and gaps that keep printed shapes from merging or breaking. In the mid-1970s each factory published its own rules in microns, and a drawing made for one factory was useless at the next.[^conway2012]
+Every chip starts as a drawing: coloured rectangles, one colour per manufacturing step, that are turned into the [photomasks](https://en.wikipedia.org/wiki/Photomask) used to print the circuit onto silicon. Sending that finished drawing off to be made is called the [tape-out](https://en.wikipedia.org/wiki/Tape-out). The drawing has to obey **design rules**: minimum widths and gaps that keep printed shapes from merging or breaking. In the mid-1970s each factory published its own rules in microns, "often running 40 pages or more", and a drawing made for one factory was useless at the next.[^conway2012]
 ```
 
-[Lynn Conway](https://en.wikipedia.org/wiki/Lynn_Conway), a computer architect at [Xerox PARC](https://en.wikipedia.org/wiki/PARC_(company)), replaced those lists with ratios. Every width and gap became a small whole multiple of one length, λ (lambda), which for the factories of the day came to about half the smallest feature they could print.[^conway2012][^harris] To build the same design in a better factory, you changed λ and nothing else. Her memoir credits the idea to her; papers written at the time credit "Mead and Conway", after her collaborator [Carver Mead](https://en.wikipedia.org/wiki/Carver_Mead) of Caltech.[^conway2012][^lyon1981]
+λ rules replaced those lists with ratios. Every width and gap became a small whole multiple of one length, λ (lambda), which for the factories of the day came to about half the smallest feature they could print.[^conway2012][^harris] To build the same design in a better factory, you changed λ and nothing else. The idea came out of [Lynn Conway](https://en.wikipedia.org/wiki/Lynn_Conway) and [Carver Mead](https://en.wikipedia.org/wiki/Carver_Mead)'s work at Xerox PARC and Caltech.[^conway2012][^lyon1981]
 
 :::{admonition} At a glance
-- **Why λ was invented:** to separate chip *design* from chip *manufacturing*, so that people outside chip companies could learn to design chips, and their designs would survive the next factory upgrade. [Conway's fix](#sec-ratios)
-- **When it was used:** λ was about half the smallest feature, so chips with 6 µm features used λ = 3 µm from 1978, until features of about 0.7 µm in industry in the early 1990s. Universities kept using it through MOSIS, a US chip-making service, down to 0.18 µm features (λ = 0.09 µm) around 2000. [SCMOS](#sec-scmos)
-- **Why it stopped:** below about one micron, different rules stopped shrinking at the same rate. One λ either wasted area or needed exceptions, and from the late 1990s printing features smaller than the wavelength of light needed rules that no list of widths and gaps could express. [Why it stopped](#sec-stopped)
+- **Why λ was invented:** to separate chip *design* from chip *manufacturing*. Every rule became a whole number of λ, about half the smallest feature, so people outside chip companies could learn the rules quickly and their designs would survive the next factory upgrade. [The rules](#sec-ratios)
+- **What it cost:** mainly area. Rounding every rule up to whole λ made layouts larger than a factory's own rules allowed: about 27% wider wiring at λ = 0.5 µm, and about 2.7 times the area for one 180 nm logic gate drawn for this article (derived figures). That mattered for products, not for prototypes. [What λ cost](#sec-cost)
+- **When it was used:** from 1978 (λ = 3 µm, in an MIT course); in industry from 3 µm nMOS processes in the late 1970s to about 0.7 µm CMOS processes in the early 1990s; in university rule sets down to λ = 0.09 µm in 2000. [SCMOS](#sec-scmos)
+- **Why it stopped:** below about one micron, different rules stopped shrinking at the same rate, so one λ either wasted area or needed exceptions; then printing below the wavelength of light needed rules no list of widths and gaps could express. [Why it stopped](#sec-stopped)
 :::
 
 (sec-timeline)=
 ## Timeline
 
 {.timeline}
-- [1974]{.yr} IBM's Robert Dennard and colleagues show that shrinking a transistor's dimensions and voltage together makes it faster and more efficient.[^dennard1974] [→ One drawing, many factories](#sec-shrink)
-- [1977]{.yr} Conway devises λ-based rules at Xerox PARC while working with Mead's group at Caltech.[^conway2012] [→ Conway's fix](#sec-ratios)
-- [1978]{.yr} Conway's MIT course: 19 student projects are fabricated together on one shared chip, at λ = 3 µm.[^conway2012] [→ The movement](#sec-movement)
-- [1979]{.yr} Mead and Conway's textbook *Introduction to VLSI Systems* appears (dated 1980). A larger shared run, MPC79, returns chips for 82 projects 29 days after its design deadline.[^timeline][^mpcadventures] [→ The movement](#sec-movement)
-- [1981]{.yr} MOSIS, a government-funded "silicon broker", opens at the University of Southern California for designs in λ = 2.5 µm rules; France's CMP makes Grenoble student chips.[^cohen1981][^isi1984][^cmp1981] [→ The brokers](#sec-brokers)
-- [1982–87]{.yr} Chips designed this way lead to Silicon Graphics (1982), MIPS Computer Systems (1984) and Sun's SPARC processors (1987).[^nrc1999][^chmsgi] [→ The chips](#sec-chips)
-- [1984]{.yr} Berkeley's Magic layout editor checks λ rules while you draw; ISI checks rules for the newer CMOS chips "scalable from 3 microns to 1.2 microns".[^magic1984][^isi1984] [→ The software](#sec-tools) [→ SCMOS](#sec-scmos)
-- [Early 1990s]{.yr} Industry's λ era ends at features of about 0.7 µm.[^casale2014] [→ The chips](#sec-chips)
-- [1997]{.yr} MOSIS offers a separate sub-micron λ rule set (SUBM), and later a deep sub-micron one (DEEP), because some rules no longer shrink with the rest.[^hp1997][^scmos8] [→ SCMOS](#sec-scmos)
-- [1999]{.yr} 0.18 µm features are printed with 0.248 µm light.[^liebmann2003] [→ Why it stopped](#sec-stopped)
-- [2000]{.yr} MOSIS maps λ = 0.09 µm onto TSMC's 0.18 µm process, the smallest λ found in its published rules.[^scmos74] [→ SCMOS](#sec-scmos)
-- [2009]{.yr} MOSIS last revises its scalable λ rules; the smallest process they cover is 0.18 µm.[^scmos8] [→ Why it stopped](#sec-stopped)
-- [2020]{.yr} MOSIS has dropped its λ design kits; λ survives mainly in teaching.[^edwards2020][^harris] [→ Why it stopped](#sec-stopped)
+- [1977]{.yr} By her account, Conway devises λ-based rules at Xerox PARC while working with Mead's group at Caltech.[^conway2012] [→ The rules](#sec-ratios)
+- [1978]{.yr} The first shared chip of student λ designs: 19 projects from an MIT course, at λ = 3 µm.[^conway2012] [→ Access](#sec-access)
+- [1979]{.yr} Mead and Conway's textbook *Introduction to VLSI Systems* teaches the rules; 82 projects from 124 designers are made at λ = 2.5 µm.[^conway2012][^mpcadventures] [→ Access](#sec-access)
+- [1981]{.yr} λ becomes the interface: MOSIS takes designs in the Mead–Conway rules at λ = 2.5 µm and asks factories to support its rules.[^cohen1981] [→ Access](#sec-access)
+- [1981–84]{.yr} Berkeley's RISC I is drawn at λ = 2 µm; one RISC II layout is made at λ = 2 µm and 1.5 µm on two different lines.[^riscerl1982][^risc2jssc1984] [→ One drawing](#sec-shrink)
+- [1984]{.yr} Berkeley's Magic editor checks λ rules while you draw; CMOS rules "scalable from 3 microns to 1.2 microns" appear.[^magic1984][^isi1984] [→ Software](#sec-tools)
+- [1986]{.yr} Xerox's Dragon rules merge two factories' rules into one λ = 1 µm set by taking "the more conservative rule".[^hoel1986] [→ Access](#sec-access)
+- [Early 1990s]{.yr} Industry's λ era ends at features of about 0.7 µm.[^casale2014] [→ What λ cost](#sec-cost)
+- [1997]{.yr} MOSIS adds sub-micron (SUBM) and later deep sub-micron (DEEP) λ rules, because some rules no longer shrink with the rest.[^hp1997][^scmos8] [→ SCMOS](#sec-scmos)
+- [1999]{.yr} 0.18 µm features are printed with 0.248 µm light, which simple width-and-gap rules cannot describe.[^liebmann2003] [→ Why it stopped](#sec-stopped)
+- [2000]{.yr} λ = 0.09 µm on TSMC's 0.18 µm process, the smallest λ in MOSIS's rules.[^scmos74] [→ SCMOS](#sec-scmos)
+- [2009–20]{.yr} MOSIS last revises its λ rules in 2009 and has dropped support for them by 2020; λ survives in teaching.[^scmos8][^edwards2020][^harris] [→ Why it stopped](#sec-stopped)
 
 (sec-before)=
-## Before λ, a chip design belonged to one factory
+## Why layouts need rules
 
-A chip is built up in layers on a [wafer](https://en.wikipedia.org/wiki/Wafer_(electronics)), a thin disc of silicon that carries many copies of the chip at once. Each layer is printed through its own mask: one for regions of [doped](https://en.wikipedia.org/wiki/Doping_(semiconductor)) silicon called **diffusion**, one for [**polysilicon**](https://en.wikipedia.org/wiki/Polycrystalline_silicon) ("poly"), one for **metal** wires, one for the **contact** holes that connect metal down to the layers below. Wherever a poly line crosses diffusion, it forms the gate of a [MOSFET](https://en.wikipedia.org/wiki/MOSFET) transistor. The chips of the late 1970s used [nMOS](https://en.wikipedia.org/wiki/NMOS_logic), which builds everything from one type of transistor.[^lyon1981]
-
-A factory's recipe is called its **process**, named after the smallest feature it can print, usually the transistor's gate length: a "6 µm process" prints gates 6 µm long.[^harris]
-
-Each process had its own rules in microns, and they changed whenever the factory improved. Drawing [layouts](https://en.wikipedia.org/wiki/Integrated_circuit_layout) was a craft practised inside semiconductor companies that both designed and made their chips. Mead had been teaching simplified rules at Caltech, but, Conway wrote, "the resulting layouts were also tied to particular processes, and had to be redone as new processes came online."[^conway2012] A prototype cost about $15,000 to $20,000 in masks and wafers and took three or four months, by Conway's 1981 estimate.[^mpcadventures]
+A chip is built up in layers on a [wafer](https://en.wikipedia.org/wiki/Wafer_(electronics)). Each layer is printed through its own mask: one for regions of [doped](https://en.wikipedia.org/wiki/Doping_(semiconductor)) silicon called **diffusion**, one for [**polysilicon**](https://en.wikipedia.org/wiki/Polycrystalline_silicon) ("poly"), one for **metal** wires, one for the **contact** holes that connect metal down to the layers below. Wherever a poly line crosses diffusion, it forms the gate of a [MOSFET](https://en.wikipedia.org/wiki/MOSFET) transistor. The chips of the late 1970s used [nMOS](https://en.wikipedia.org/wiki/NMOS_logic), which builds everything from one type of transistor.[^lyon1981] A factory's recipe is called its **process**, named after the smallest feature it can print, usually the gate length: a "6 µm process" prints gates 6 µm long.[^harris]
 
 Design rules exist because the factory is imperfect. Each mask is aligned to the layers already on the wafer and is never exactly in place, and printed shapes come out a little wider or narrower than drawn. [Dick Lyon](https://en.wikipedia.org/wiki/Richard_F._Lyon) of Xerox PARC described λ as a bound on both errors, so that in the worst case edges on two different masks can end up 2λ away from where they were drawn.[^lyon1981] A transistor's gate therefore overhangs the diffusion it crosses by 2λ: if it overhung by less, a small slip would leave a strip of diffusion running past the gate, connecting the transistor's two ends permanently.[^lyon1981]
 
@@ -63,9 +59,11 @@ Design rules exist because the factory is imperfect. Each mask is aligned to the
 ```
 
 (sec-ratios)=
-## Conway's fix: every rule as a multiple of λ
+## The rules, written in λ
 
-Conway's idea, in spring 1977, was to express every rule as a ratio. "MOS design rules should not be framed as sets of lengths but as sets of ratios of lengths," she recalled in 2012. "Such dimensionless rules could then be scaled to any process as multiples of a basic length unit in microns, a unit I called Lambda (λ)."[^conway2012] She found the largest of a process's minimum widths, gaps, extensions and overlaps, set λ to half of it, and wrote each rule as a small whole number of λ. The final rule set "remained small at only two pages in length, easy to teach, learn, apply, and check."[^conway2012]
+"MOS design rules should not be framed as sets of lengths but as sets of ratios of lengths," Conway recalled. "Such dimensionless rules could then be scaled to any process as multiples of a basic length unit in microns, a unit I called Lambda (λ)."[^conway2012] She set λ to half the largest of a process's minimum widths, gaps, extensions and overlaps, then tuned each rule to a small whole number of λ; the textbook description is that λ rules "round up dimensions to an integer multiple of λ".[^conway2012][^westeharris2011] The result fitted on "only two pages", "easy to teach, learn, apply, and check".[^conway2012]
+
+Read as a recipe, the rules build a minimum transistor directly: a 2λ poly line crosses a 2λ diffusion strip and overhangs it by 2λ on each side; diffusion extends 2λ past the gate to form the source and drain; a contact is a 2λ square with 1λ of metal or diffusion around it; metal wires are 3λ wide and 3λ apart because metal climbs over the bumps left by the layers below.[^lyon1981] For a programmer, the rules work like a linter over integer coordinates: every poly box at least 2 grid units wide, every gap between poly boxes at least 2.
 
 ```{raw} html
 <figure class="fig wide" id="fig-rulebook">
@@ -86,14 +84,16 @@ Conway's idea, in spring 1977, was to express every rule as a ratio. "MOS design
 </figure>
 ```
 
-Lyon summarised the logic as two "meta-rules": moving an edge relative to another by less than 2λ "should not be obviously fatal", and moving it by less than 1λ "should not cause significant degradation in performance."[^lyon1981] Even in 1981 some things refused to fit: the pads where bonding wires attach to the chip stayed about 100 µm across whatever λ was.[^lyon1981]
+Lyon summarised the logic as two "meta-rules": moving an edge by less than 2λ "should not be obviously fatal", and by less than 1λ "should not cause significant degradation in performance."[^lyon1981]
 
-The whole-number rules also made layout software far simpler. Shapes could sit on an integer λ grid with only horizontal and vertical edges, which Conway noted made editors and checking tools "greatly simplified and speeded-up".[^conway2012]
+Even the first set had exceptions. Lyon flagged the 1.5λ rule for the depletion implant (the layer that makes always-on load transistors) as "not as uniformly conservative as the rest" and recommended 2λ instead, and the pads where bonding wires attach stayed about 100 µm across whatever λ was.[^lyon1981] The simple rules also left out process options such as buried contacts, which join poly directly to diffusion and "may provide dramatic improvements in density".[^lyon1981]
 
 (sec-shrink)=
 ## One drawing, many factories
 
-A λ layout is a drawing in abstract units. To make it, every coordinate is multiplied by the λ of the chosen process. The first course chips in 1978 used λ = 3 µm, the MPC79 run a year later λ = 2.5 µm, and by the 1990s university chip services were mapping the same kind of drawing onto [CMOS](https://en.wikipedia.org/wiki/CMOS) processes, which use two types of transistor, with λ of 0.6 µm and below.[^conway2012][^scmos72]
+The bet behind λ was that a factory's errors would shrink in step with its features, so a drawing scaled by the same factor would still print correctly.[^lyon1981] It was worth making because shrinking a transistor makes it faster and lower-power ([Dennard scaling](https://en.wikipedia.org/wiki/Dennard_scaling)), and with density "doubling roughly every two years", Conway reasoned, a layout that could move to the next process beat one hand-squeezed for this one.[^dennard1974][^conway2012]
+
+A λ layout is a drawing in abstract units. To make it, every coordinate is multiplied by the λ of the chosen process, and the file sent to the factory is "always in absolute metric units -- never in lambda units".[^scmos8] The 2λ poly width becomes 6 µm at λ = 3 µm, the value for the first course chips in 1978, and 1.2 µm at λ = 0.6 µm on a 1.2 µm CMOS process of the 1990s.[^conway2012][^scmos72]
 
 ```{raw} html
 <figure class="fig wide" id="fig-shrink">
@@ -106,113 +106,95 @@ A λ layout is a drawing in abstract units. To make it, every coordinate is mult
     {"label":"TSMC 0.35 µm CMOS via MOSIS (1990s)","short":"0.35 µm","lambda":0.25,"node":0.35}
   ]'><noscript><p>A simplified inverter that is 28λ × 46λ: at λ = 3 µm it measures 84 × 138 µm; at λ = 0.25 µm it measures 7 × 11.5 µm.</p></noscript></div>
   <div class="legend"><span style="--c:var(--l-well)">n-well (CMOS only, explained below)</span><span style="--c:var(--l-diff)">diffusion</span><span style="--c:var(--l-poly)">polysilicon</span><span style="--c:var(--l-metal)">metal</span><span style="--c:var(--l-contact)">contact</span></div>
-  <figcaption><strong>The drawing never changes; only λ does.</strong> Left: a simplified inverter (a NOT gate) drawn in λ units. Right: the same drawing at true size for six processes, next to a 10 µm scale bar. <a href="#fig-exact">A later figure</a> draws the same inverter to a modern factory's exact rules. The inverter is drawn as CMOS, the later standard; the 1978–79 chips were nMOS. λ values from <a href="https://worrydream.com/refs/Conway_L_2012_-_Reminiscences_of_the_VLSI_Revolution.pdf">Conway (2012)</a> and <a href="https://www.ece.iit.edu/~eoruklu/courses/ece429/tutorial/rules72.html">MOSIS SCMOS rules rev. 7.2</a>.</figcaption>
+  <figcaption><strong>The drawing never changes; only λ does.</strong> Left: a simplified inverter (a NOT gate) drawn in λ units. Right: the same drawing at true size for six processes side by side, with a 10 µm scale bar; the process is named under each cell, from λ = 3 µm (6 µm) down to λ = 0.25 µm (0.35 µm). <a href="#fig-exact">A later figure</a> draws the same inverter to a modern factory's exact rules. The inverter is drawn as CMOS, the later standard; the 1978–79 chips were nMOS. λ values from <a href="https://worrydream.com/refs/Conway_L_2012_-_Reminiscences_of_the_VLSI_Revolution.pdf">Conway (2012)</a> and MOSIS SCMOS rules <a href="https://www.ece.iit.edu/~eoruklu/courses/ece429/tutorial/rules72.html">rev. 7.2</a> and <a href="https://web.archive.org/web/20001002134149/http://www.mosis.org/Technical/Designrules/scmos/scmos-main.html">rev. 7.4</a>.</figcaption>
 </figure>
 ```
 
-The bet behind λ was that a factory's errors would shrink in step with its features: better lithography would bring tighter alignment and sharper edges at the same rate, so a drawing scaled by the same factor would still print correctly.[^lyon1981]
+It worked in practice. Berkeley's RISC II was made in "two scaled versions" on "two different processing lines using the simple layout rules of C.A. Mead and L.A. Conway", at λ = 2 µm and 1.5 µm, giving 4 µm and 3 µm gates from one layout.[^risc2jssc1984] The flexibility had limits: the chip service [MOSIS](https://en.wikipedia.org/wiki/MOSIS) could "change lambda a little bit, but not a lot. If a big change of lambda is necessary, the designer has to make the changes."[^cohen1981]
 
-Shrinking was worth chasing for a separate reason. In 1974 [Robert Dennard](https://en.wikipedia.org/wiki/Robert_H._Dennard)'s group at IBM had shown that scaling a transistor's dimensions and voltage together made it faster and lower-power at the same power density, the principle now called [Dennard scaling](https://en.wikipedia.org/wiki/Dennard_scaling).[^dennard1974] With density "doubling roughly every two years" ([Moore's law](https://en.wikipedia.org/wiki/Moore%27s_law)), Conway reasoned, a layout that could move to the next process beat one hand-squeezed for this one.[^conway2012]
+(sec-access)=
+## How λ let more people use shared wafers
 
-The price was area. Each rule was rounded up to a whole number of λ that was safe on every process it might meet, and a 1980 MIT thesis called the Mead–Conway rules "very conservative".[^baker1980] Conway accepted that on purpose, as the cost of rules that newcomers could learn.[^conway2012]
+On a shared run, or [multi-project wafer](https://en.wikipedia.org/wiki/Multi-project_wafer_service), many designs ride on one mask set. λ widened who could take part in three ways.
 
-(sec-movement)=
-## A textbook and a course turned λ into a movement
+**A rulebook newcomers could learn.** Two pages of whole numbers replaced forty pages of process-specific microns, so people who had never seen a factory could draw correct layouts.[^conway2012] In an MIT course in autumn 1978, 19 student projects were merged onto one chip at λ = 3 µm, and in 1979, 124 designers at about a dozen universities submitted 82 projects at λ = 2.5 µm.[^conway2012][^mpcadventures]
 
-Mead and Conway wrote the method up as *Introduction to VLSI Systems*, [VLSI](https://en.wikipedia.org/wiki/Very-large-scale_integration) meaning "very-large-scale integration". Drafts printed at PARC were used in courses at Caltech and Berkeley from October 1977, and Addison-Wesley published the book in time for the autumn 1979 courses, with a 1980 date in the imprint.[^timeline][^conway2012] It eventually sold around 70,000 copies.[^conway2012]
+**One set of rules for every design.** Because every project obeyed the same λ rules, a broker could check them all with one checker, pack them onto shared masks and pick the factory afterwards. MOSIS turned the usual relationship round: "We say, 'Those are OUR design rules. Do you support them?'"[^cohen1981] By 1984 it reported "at least 20 vendors" able to make nMOS chips to the Mead–Conway rules.[^isi1984] Later, a design in MOSIS's most conservative λ rules "could be fabricated on any of the MOSIS processes".[^westeharris2011]
 
-Conway's autumn 1978 course at [MIT](https://en.wikipedia.org/wiki/Massachusetts_Institute_of_Technology) proved that students could get working chips. The class had 32 students, and on 6 December its 19 projects were sent over the [ARPANET](https://en.wikipedia.org/wiki/ARPANET) to PARC and merged into one shared chip. Micro Mask made the masks with an [electron-beam](https://en.wikipedia.org/wiki/Electron-beam_lithography) machine, and [Hewlett-Packard](https://en.wikipedia.org/wiki/Hewlett-Packard)'s research lab ran the wafers on a 6 µm nMOS process, λ = 3 µm. Packaged chips were shipped back on 18 January 1979.[^conway2012]
-
-**MPC79** ("multi-project chip, 1979") scaled the experiment up: 124 designers at about a dozen universities submitted 82 projects by a 4 December deadline. PARC merged them onto 12 chip types, and HP fabricated them on a 5 µm nMOS process (λ = 2.5 µm). Packaged chips went back to every designer 29 days after the deadline, at a cost per project "on the order of a few hundred dollars", against $15,000 to $20,000 for a conventional prototype.[^mpcadventures][^conway2012] The next run, MPC580 in spring 1980, carried 171 projects from 15 organisations.[^conway2012]
-
-Mead coined "the 'Tall Thin Man'" for "system designers like Johannsen who used our exploratory methods"; Conway noted that the image left out women engineers, herself included.[^conway2012] Within two years, 120 universities were teaching [Mead–Conway](https://en.wikipedia.org/wiki/Mead%E2%80%93Conway_VLSI_chip_design_revolution) courses.[^timeline][^conway2012]
-
-(sec-brokers)=
-## Brokers, not universities, got the chips made
-
-The chips were made by a **broker** that collected many designs, packed them onto [shared wafers](https://en.wikipedia.org/wiki/Multi-project_wafer_service) and paid one factory, or **fab**, for the whole run, so that the cost of masks and wafer processing was divided among the designs;[^isi1984]
-
-```{raw} html
-<figure class="fig" id="fig-wafer">
-  <div class="diagram" data-diagram="wafer"><noscript><p>Left: a wafer covered by repeated copies of one design. Right: a multi-project wafer, where each repeated exposure carries four different projects.</p></noscript></div>
-  <figcaption><strong>A multi-project wafer splits one run among many designs.</strong> A wafer is printed by repeating one exposure (outlined) across its surface. Filling each exposure with several small projects instead of one product shares the cost of masks and processing among them. Schematic, not to scale; cost model from the <a href="https://web.archive.org/web/20250119100913/https://apps.dtic.mil/sti/pdfs/ADA157991.pdf">USC/ISI 1984 annual report</a>.</figcaption>
-</figure>
-```
-
-At PARC, Alan Bell and [Martin Newell](https://en.wikipedia.org/wiki/Martin_Newell_(computer_scientist)) built the MPC79 "implementation system" in 1979, software that took designs by electronic message and fed them to mask makers and fabs.[^mpc79doc] In spring 1980 PARC handed the system to [Danny Cohen](https://en.wikipedia.org/wiki/Danny_Cohen_(computer_scientist)) and [Keith Uncapher](https://en.wikipedia.org/wiki/Keith_Uncapher) at the [USC Information Sciences Institute](https://en.wikipedia.org/wiki/Information_Sciences_Institute), and the resulting service, **[MOSIS](https://en.wikipedia.org/wiki/MOSIS)** (the MOS Implementation Service), began operating in January 1981 with [DARPA](https://en.wikipedia.org/wiki/DARPA) funding.[^conway2012][^isi1984]
-
-Cohen credited the idea of a "silicon broker" to Carver Mead.[^cohen1981] λ was what made it practical. MOSIS aimed "to totally isolate the designer from all the trivia that fabrication requires", Cohen and George Lewicki wrote, and in 1981 it supported "nMOS with the Mead-Conway design rules" at "lambda equals 2.5 microns".[^cohen1981] MOSIS told factories its rules rather than asking for theirs: "We say, 'Those are OUR design rules. Do you support them?'" Once given a file, MOSIS could "change lambda a little bit, but not a lot. If a big change of lambda is necessary, the designer has to make the changes."[^cohen1981]
-
-By 1984 MOSIS reported that "at least 20 vendors" could make nMOS chips to the Mead–Conway rules, at 3 µm and 4 µm, with costs cut by one to two orders of magnitude by sharing wafers.[^isi1984] It ran 258 projects in 1981 and 1,880 in 1989, for users at more than 360 institutions.[^nrc1999] Class projects were made free, and by 2005 MOSIS had prototyped more than 50,000 designs.[^viterbi2005] Its factories changed over the years, from HP to Orbit Semiconductor, [AMI](https://en.wikipedia.org/wiki/American_Microsystems), [TSMC](https://en.wikipedia.org/wiki/TSMC), IBM and others.[^mosisfab1997][^mosisvendors2010]
-
-Europe built its own brokers: France's CMP made Grenoble student chips in 1981, followed by EUROCHIP (1989) and EUROPRACTICE (1995).[^cmp1981][^das2010]
+**One mask set for several factories.** When two factories' rules differed, a λ rule set could cover both by taking the worse of each. Xerox's 1986 Dragon CMOS rules, at λ = 1 µm, aimed for "a mask set that can be used by both" its own lab and VLSI Technology: "We simply adopt the more conservative rule universally."[^hoel1986]
 
 (sec-tools)=
-## The software grew up around the λ grid
+## Software on the λ grid
 
-The designs travelled as **CIF**, the [Caltech Intermediate Form](https://en.wikipedia.org/wiki/Caltech_Intermediate_Form): a plain-text list of boxes and wires on each layer, in units of 0.01 µm. Its 2.0 version was written by [Bob Sproull](https://en.wikipedia.org/wiki/Bob_Sproull) and Dick Lyon between December 1977 and spring 1978, and it was the file format of MPC79 and of MOSIS.[^cif1980][^mpcadventures][^timeline]
+Whole-number rules let every shape sit on an integer λ grid with only horizontal and vertical edges, which Conway said made editors and checkers "greatly simplified and speeded-up".[^conway2012] Designs left the grid at export: they travelled as **CIF**, the [Caltech Intermediate Form](https://en.wikipedia.org/wiki/Caltech_Intermediate_Form), a plain-text list of boxes in units of 0.01 µm, so a 2λ contact at λ = 3 µm was written as a box 600 units wide.[^cif1980]
 
-Layout tools of the period included:
-
-- **ICARUS**, a layout editor for PARC's [Alto](https://en.wikipedia.org/wiki/Xerox_Alto) workstation, adapted to λ rules in 1977.[^icarus1978][^timeline]
-- **Bristle Blocks** (Caltech, 1979), an early [silicon compiler](https://en.wikipedia.org/wiki/Silicon_compiler) by Dave Johannsen, which aimed to produce "an entire LSI mask set" from a one-page description.[^bristle1979]
-- **Caesar** and **KIC**, Berkeley layout editors producing CIF by 1981; Caesar was used to lay out RISC I, RISC II and MIPS.[^cifplot1981][^nrc1999]
-- **[Magic](https://en.wikipedia.org/wiki/Magic_(software))** (1984), from [John Ousterhout](https://en.wikipedia.org/wiki/John_Ousterhout)'s group at Berkeley, which re-ran [design rule checking](https://en.wikipedia.org/wiki/Design_rule_checking) incrementally as the designer edited.[^magic1984][^magicdrc1984]
-
-Circuit extractors and simulators followed; one at MIT caught bugs in the Scheme-79 chip before fabrication.[^baker1980] Magic is still maintained by Tim Edwards, though its manual notes that "the decreasing use of scalable processes" has made drawing in λ "largely obsolete".[^magicsite][^magicmanual]
-
-```{raw} html
-<figure class="fig" id="fig-flow">
-  <ol class="flow">
-    <li><strong>Draw</strong> the layout on a λ grid in an editor such as Caesar (later Magic).</li>
-    <li><strong>Scale and export:</strong> multiply by λ and write a CIF text file in absolute units.</li>
-    <li><strong>Submit</strong> the file to MOSIS by ARPANET or email.</li>
-    <li><strong>Merge:</strong> MOSIS places projects onto shared chips and the chips onto wafers, matched to a factory that accepts its rules.</li>
-    <li><strong>Masks:</strong> MOSIS converts the geometry for a mask maker, and the first masks are made (4 days at best).</li>
-    <li><strong>Wafers:</strong> the fab processes them (5 days at best); MOSIS accepts them (1 day).</li>
-    <li><strong>Package and ship</strong> the chips back (8 days at best). Best case about 18 days in all; MOSIS quoted four to six weeks for standard runs.</li>
-  </ol>
-  <figcaption><strong>A λ tape-out through MOSIS in the mid-1980s.</strong> Day counts and the four-to-six-week figure are from the <a href="https://web.archive.org/web/20250119100913/https://apps.dtic.mil/sti/pdfs/ADA157991.pdf">USC/ISI 1984 annual report</a>; MOSIS's later rules confirm files arrived "always in absolute metric units — never in lambda units" (<a href="https://web.archive.org/web/20111231160920/http://www.mosis.com:80/Technical/Designrules/scmos/scmos-main.html">SCMOS rev. 8.00</a>).</figcaption>
-</figure>
-```
+- **ICARUS**, a layout editor for PARC's [Alto](https://en.wikipedia.org/wiki/Xerox_Alto), was adapted to λ rules in 1977.[^icarus1978][^timeline]
+- **[Magic](https://en.wikipedia.org/wiki/Magic_(software))** (1984), from Berkeley, re-ran [design rule checking](https://en.wikipedia.org/wiki/Design_rule_checking) incrementally as the designer edited.[^magic1984][^magicdrc1984] It is still maintained, though its manual notes that "the decreasing use of scalable processes" has made drawing in λ "largely obsolete".[^magicsite][^magicmanual]
 
 (sec-chips)=
-## Student λ chips seeded Silicon Graphics, MIPS and SPARC
+## What people built in λ
 
-λ arrived as DARPA's [VLSI research programme](https://en.wikipedia.org/wiki/VLSI_Project) was growing from under $15 million in 1979 to over $93 million in 1982.[^nrc1999] Its best-known λ chips were designed by small university teams and fabricated through MPC runs or MOSIS.[^mpcadventures][^nrc1999]
+Well-known λ chips include processors and accelerators designed by small university teams.[^mpcadventures][^nrc1999]
 
-```{list-table} Research chips drawn with Mead–Conway λ rules, and where they led.
+```{list-table} Research chips drawn with Mead–Conway λ rules.
 :header-rows: 1
 :class: cards
-:widths: 22 40 38
+:widths: 22 46 32
 
 * - Chip
   - What it showed
-  - What came next
+  - λ and process
 * - **Scheme-79**, MIT, 1979
-  - A Lisp processor on one chip, fabricated in MPC79; grew from a prototype [Guy Steele](https://en.wikipedia.org/wiki/Guy_L._Steele_Jr.) designed in the 1978 course.[^mpcadventures][^scheme1980]
-  - Paper: Holloway, Steele, Sussman and Bell, *The SCHEME-79 Chip* (1980).[^scheme1980]
+  - A Lisp processor on one chip; grew from a prototype [Guy Steele](https://en.wikipedia.org/wiki/Guy_L._Steele_Jr.) designed in the 1978 course.[^mpcadventures][^scheme1980]
+  - λ = 2.5 µm, 5 µm nMOS (the 1979 shared run).[^mpcadventures][^conway2012]
 * - **[Geometry Engine](https://en.wikipedia.org/wiki/Geometry_Engine)**, Stanford, 1979–82
-  - 3D graphics maths in custom silicon; first prototype on MPC79.[^mpcadventures][^clark1982]
-  - [Silicon Graphics](https://en.wikipedia.org/wiki/Silicon_Graphics), founded 1982.[^chmsgi]
+  - 3D graphics maths in custom silicon.[^clark1982]
+  - First prototype at λ = 2.5 µm (the 1979 shared run); later λ not found in sources.[^mpcadventures]
 * - **[RISC I](https://en.wikipedia.org/wiki/Berkeley_RISC)**, Berkeley, 1981–82
-  - About 44,000 transistors on 4–5 µm nMOS (sources differ: 44,420 or 44,500), designed in a graduate course and fabricated through MOSIS.[^chmrisc][^peek1983][^ethw]
-  - Sun's [SPARC](https://en.wikipedia.org/wiki/SPARC) processors (1987).[^nrc1999]
-* - **[Stanford MIPS](https://en.wikipedia.org/wiki/Stanford_MIPS)**, 1981–84
-  - A 32-bit nMOS processor from [John Hennessy](https://en.wikipedia.org/wiki/John_L._Hennessy)'s group, fabricated through MOSIS and on Stanford's own line.[^mipsoh]
-  - [MIPS Computer Systems](https://en.wikipedia.org/wiki/MIPS_Computer_Systems), founded 1984.[^nrc1999][^mipsoh]
+  - About 44,000 transistors (sources differ: 44,420 or 44,500), drawn in a graduate course.[^chmrisc][^peek1983]
+  - λ = 2 µm, nMOS with no buried contacts.[^riscerl1982]
+* - **RISC II**, Berkeley, 1983–84
+  - One layout made on two different lines.[^risc2jssc1984]
+  - λ = 2 µm and 1.5 µm (4 µm and 3 µm gates).[^risc2jssc1984]
 ```
 
-Beyond the textbook, the key papers are Conway's report on the shared runs, *The MPC Adventures* (1981);[^mpcadventures] [Patterson](https://en.wikipedia.org/wiki/David_Patterson_(computer_scientist)) and [Séquin](https://en.wikipedia.org/wiki/Carlo_H._S%C3%A9quin)'s *RISC I: A Reduced Instruction Set VLSI Computer* (1981);[^risc1981] [Clark](https://en.wikipedia.org/wiki/James_H._Clark)'s *The Geometry Engine* (1982), which says the project "probably would not have been carried out" without Conway's support;[^clark1982] and Ousterhout's *Magic: A VLSI Layout System* (1984).[^magic1984]
+(sec-cost)=
+## What λ cost, and whether it mattered
 
-MIPS also shows where λ's usefulness ended. Its commercial chip, co-founder John Moussouris recalled, "needed to go from NMOS to CMOS, from Mead/Conway design to SRAM-like design. You know, very high speed, balanced path, dynamic circuits."[^mipsoh]
+The cost was area. "Lambda-based rules are necessarily conservative because they round up dimensions to an integer multiple of λ," the standard CMOS textbook says; "the potential density advantage of micron rules is sacrificed for simplicity and easy scalability".[^westeharris2011] The clearest way to see it is to add up the space between two metal wires that each land on a contact.[^batten]
 
-Industry used λ too. In 2014 [Synopsys](https://en.wikipedia.org/wiki/Synopsys)'s Marco Casale-Rossi wrote that λ rules "have been used to design the layout of ICs for more than a decade, from 3-µm" nMOS "of the late 1970s to 0.7-µm" CMOS "of the early 1990s", and that they raised layout productivity "from a handful of transistors a day to several hundred".[^casale2014]
+```{raw} html
+<figure class="fig wide" id="fig-pitch">
+  <div class="diagram" data-diagram="pitch"><noscript><p>Contacted metal pitch at λ = 0.5 µm: λ rules give half a contact 0.5, surround 0.5, metal gap 1.5, surround 0.5, half a contact 0.5, total 3.5 µm; the process's own micron rules give 0.375, 0.5, 1.0, 0.5, 0.375, total 2.75 µm.</p></noscript></div>
+  <figcaption><strong>Theory versus practice: λ rules spend extra space.</strong> The distance between two contacted metal wires, built from its parts, under λ rules (λ = 0.5 µm) and under the same process's own micron rules, drawn to the same scale. The micron rules allow smaller contacts and a narrower metal gap. Values from <a href="https://www.csl.cornell.edu/courses/ece6745/handouts/ece6745-T04-methodology-custom.pdf">Batten, Cornell ECE 6745, slide 21</a> (after Weste, table 3.2), whose totals are 7λ = 3.5 µm and 2.75 µm.</figcaption>
+</figure>
+```
+
+At λ = 0.5 µm the λ pitch is 3.5 µm against 2.75 µm, about 27% wider (3.5 / 2.75, derived); "Scaled design is legal but much larger than it needs to be!", the slide concludes.[^batten] At 65 nm the gap is similar: Weste and Harris's example micron rules give a contacted metal 1 pitch of about 0.19 µm, against 7λ = 0.245 µm with λ = 0.035 µm, about 29% wider (0.245 / 0.19, derived).[^westeharris2011]
+
+For a whole logic gate, the simple CMOS inverter drawn in λ above can also be drawn to GlobalFoundries' 180 nm GF180MCU rules with the same transistor sizes. Dividing GF180MCU's 0.28 µm minimum gate by 2 shows λ must be at least 0.14 µm there.[^gf180rules] At that λ the λ cell takes 25.2 µm²; the exact-rule cell takes 9.5 µm², about 62% less (1 − 9.5 / 25.2, derived). Part of that gap is slack in the λ drawing, and its 0.28 µm contacts would also need resizing to GF180MCU's fixed 0.22 µm.
+
+```{raw} html
+<figure class="fig" id="fig-exact">
+  <div class="diagram" data-diagram="exact"><noscript><p>The 28λ × 46λ inverter at λ = 0.14 µm measures 3.92 × 6.44 µm (25.2 µm²). The same circuit drawn to GF180MCU rules measures 2.20 × 4.32 µm (9.5 µm²).</p></noscript></div>
+  <div class="legend"><span style="--c:var(--l-well)">n-well</span><span style="--c:var(--l-diff)">diffusion</span><span style="--c:var(--l-poly)">polysilicon</span><span style="--c:var(--l-metal)">metal</span><span style="--c:var(--l-contact)">contact</span></div>
+  <figcaption><strong>The same inverter, drawn both ways for one 180 nm process, at the same scale.</strong> Left: the λ drawing from <a href="#fig-shrink">the earlier figure</a> at λ = 0.14 µm, the smallest λ whose 2λ gate meets GF180MCU's 0.28 µm minimum. Right: the same circuit with the same transistor sizes, drawn for this article to GF180MCU's 3.3 V rules (CO.1–CO.8, PL.2–PL.5b, DF.4c, DF.6, DF.16 and Mn.1–Mn.3, checked by script), with the λ cell's outline dashed behind it. Both are simplified hand layouts without implant layers, and the λ drawing is not squeezed to its own minimum, so part of the difference is slack in the drawing rather than the rules. Its 2λ contacts would also have to be resized to GF180MCU's fixed 0.22 µm when masks are made. Rules from the <a href="https://gf180mcu-pdk.readthedocs.io/en/latest/physical_verification/design_manual/drm_07_02.html">GF180MCU design manual</a>.</figcaption>
+</figure>
+```
+
+Speed is harder to pin down. In λ's main era the minimum gate was 2λ, the process's own gate length (6 µm at λ = 3 µm), so λ rules did not lengthen the gate itself.[^conway2012] Later rule sets differed: some 180 nm λ rules "set λ = 0.10 µm, then shrink the gate by 20 nm while generating masks", while plain SCMOS on 0.5 µm processes drew gates 0.7 µm long.[^westeharris2011][^scmos8] The extra spacing makes wires longer; we found no source that measured how much delay that cost.
+
+Berkeley's RISC I team compared their chip with Motorola's MC68000, a different and more complex design, so the gaps below are not λ's alone. RISC I took 15 man-months of design and 12 of layout and reached first silicon in 19 months; the 68000 took 100 and 70 man-months and 30 months.[^riscerl1982] RISC I also used about 2.8 square mils (one square mil is about 645 µm²) per device against about 1.0 for the 68000, though nearly half the 68000's devices are dense ROM, and the source does not separate the effect of λ rules from the rest of the design.[^riscerl1982]
+
+Whether it mattered depended on the chip.
+
+- **For classes and prototypes, no.** The Dragon designers, drawing an N-well at 12λ where one factory needed 4λ, wrote "we're not too concerned about the area penalty".[^hoel1986] The textbook calls λ rules "usable for class designs".[^westeharris2011]
+- **For products, yes.** The same textbook calls them "not very useful for production designs", especially metal width and spacing, which are "too conservative".[^westeharris2011] MIPS's commercial chip left the whole Mead–Conway style behind, not just its rules; it "needed to go from NMOS to CMOS, from Mead/Conway design to SRAM-like design. You know, very high speed, balanced path, dynamic circuits," co-founder John Moussouris recalled.[^mipsoh] Industry used the Mead–Conway method, λ included, for layout productivity, "from a handful of transistors a day to several hundred", but only until about 0.7 µm.[^casale2014]
 
 (sec-scmos)=
-## SCMOS stretched λ to CMOS, and needed three rulebooks to do it
+## SCMOS stretched λ to CMOS, and needed three rulebooks
 
-Through the 1980s the industry moved from nMOS to CMOS, which needs **wells** (deep doped regions that host the second transistor type) and soon added several metal layers joined by **vias**. By 1984 ISI was checking CMOS rules "scalable from 3 microns to 1.2 microns", written by Don Trotter of the University of Mississippi.[^isi1984] The rule set it settled on, **Scalable CMOS (SCMOS)**, was "a set of logical layers together with their design rules, which provide a nearly process- and metric-independent interface to many CMOS fabrication processes".[^scmos8] Its rules were frank about the trade-off: "SCMOS is there for portability and simplicity. It is NOT there for fine-tuned layout."[^scmos8]
+[CMOS](https://en.wikipedia.org/wiki/CMOS), which pairs n-type and p-type transistors, needs **wells** (deep doped regions that host the second type) and soon added several metal layers joined by **vias**. MOSIS's answer was **Scalable CMOS (SCMOS)**, "a nearly process- and metric-independent interface to many CMOS fabrication processes", with its own values (a 2λ metal 1 gap, for example, against 3λ in the Mead–Conway nMOS rules). Its documentation was frank: "SCMOS is there for portability and simplicity. It is NOT there for fine-tuned layout."[^scmos8]
 
 ```{table} λ values MOSIS published for each SCMOS rule set. Plain SCMOS rules were written for 1–3 µm processes; the SUBM and DEEP variants changed some rules so that a smaller λ could be used.[^scmos72][^scmos74]
 :name: lambda-table
@@ -229,59 +211,41 @@ Through the 1980s the industry moved from nMOS to CMOS, which needs **wells** (d
 | TSMC 0.18 µm | not offered | 0.10 µm | 0.09 µm |
 ```
 
-The same HP 0.8 µm process had two values of λ, 0.5 µm under the original rules and 0.4 µm under the sub-micron ones. MOSIS made SCMOS_SUBM "by increasing the lambda size for some rules (those that didn't shrink as fast in practice as did the overall scheme of things)", offered by 1997, and revised them again into SCMOS_DEEP at 0.25 µm; by 2000 it mapped λ = 0.09 µm onto TSMC's 0.18 µm process.[^scmos8][^hp1997][^scmos74] The single ruler had become three. Below a micron, λ was no longer half the process name either: on 0.5 µm processes plain SCMOS used λ = 0.35 µm, so a minimum gate was drawn 0.7 µm long.[^scmos8]
+The same HP 0.8 µm process had two values of λ, 0.5 µm under the original rules and 0.4 µm under the sub-micron ones. MOSIS made SCMOS_SUBM "by increasing the lambda size for some rules (those that didn't shrink as fast in practice as did the overall scheme of things)", and revised them again into SCMOS_DEEP.[^scmos8][^hp1997] The single ruler had become three. λ was no longer half the process name either: on 0.5 µm processes plain SCMOS used λ = 0.35 µm, so a minimum gate was drawn 0.7 µm long. Under the SUBM rules (λ = 0.3 µm), poly was drawn 0.6 µm wide and MOSIS shrank it by 0.1 µm when making masks.[^scmos8][^westeharris2011]
 
 ```{raw} html
 <figure class="fig wide" id="fig-drift">
-  <div class="diagram" data-diagram="drift"><noscript><p>How many times larger each MOSIS rule became, measured in λ, from SCMOS to DEEP: gap between wells at different voltages 9λ to 18λ (×2); gap between contacts 2λ to 4λ (×2); poly gap 2λ to 3λ (×1.5); metal 1 gap 2λ to 3λ (×1.5); via width 2λ to 3λ (×1.5); metal 2 gap 3λ to 4λ (×1.33); diffusion past gate 3λ to 4λ (×1.33); gate overhang 2λ to 2.5λ (×1.25); poly width and metal 1 width unchanged at 2λ and 3λ.</p></noscript></div>
-  <figcaption><strong>Measured in λ, the gaps grew as λ shrank.</strong> Each bar shows how many times larger a rule became, in λ, in MOSIS's sub-micron (SUBM) or deep sub-micron (DEEP) rule set than in the original SCMOS set. If every dimension had scaled with λ, every bar would stay at ×1. Widths mostly did; gaps and overlaps grew, so the same circuit needed more λ × λ squares, and DEEP needed half-λ values such as 2.5λ. Data from MOSIS SCMOS rev. 8.00, tables 3a and 3b (<a href="https://web.archive.org/web/20111231160920/http://www.mosis.com:80/Technical/Designrules/scmos/scmos-main.html">archived copy</a>).</figcaption>
+  <div class="diagram" data-diagram="drift"><noscript><p>How many times larger each MOSIS rule became, measured in λ, from SCMOS to SUBM and to DEEP: gap between wells at different voltages 9λ, 18λ, 18λ; gap between contacts 2λ, 3λ, 4λ; poly gap 2λ, 3λ, 3λ; metal 1 gap 2λ, 3λ, 3λ; via width 2λ, 2λ, 3λ; metal 2 gap 3λ, 3λ, 4λ; diffusion past gate 3λ, 3λ, 4λ; gate overhang 2λ, 2λ, 2.5λ; poly width 2λ and metal 1 width 3λ unchanged.</p></noscript></div>
+  <figcaption><strong>Measured in λ, the gaps grew as λ shrank.</strong> Paired bars show how many times larger each rule became, in λ, in MOSIS's sub-micron (SUBM, grey) and deep sub-micron (DEEP, accent) rule sets than in the original SCMOS set, whose value is given with each rule. If every dimension had scaled with λ, every bar would stay at ×1. Widths mostly did; gaps and overlaps grew, so the same circuit needed more λ × λ squares, and DEEP needed half-λ values such as 2.5λ. Data from MOSIS SCMOS rev. 8.00, tables 3a and 3b (<a href="https://web.archive.org/web/20111231160920/http://www.mosis.com:80/Technical/Designrules/scmos/scmos-main.html">archived copy</a>).</figcaption>
 </figure>
 ```
 
 (sec-stopped)=
 ## Below a micron, the rules stopped shrinking together
 
-λ assumed that "all manufacturing dimensions scale equally", which a Cornell course slide says holds only over "some modest span of time".[^batten] Below a micron, several things broke it at once.
+λ assumed that "all manufacturing dimensions scale equally", which holds only over "some modest span of time".[^batten] Below a micron, several things broke it at once.
 
-**Some rules shrank more slowly than others.** Between the original and deep rule sets, the minimum gap between two contacts went from 2λ to 4λ, and the gap between wells at different voltages from 9λ to 18λ, while poly stayed 2λ wide.[^scmos8] The same slide, based on Neil Weste's CMOS design textbook, adds up the **contacted metal pitch**, the centre-to-centre distance of two metal wires that each land on a contact, for a process with λ = 0.5 µm.[^batten]
+**Some rules shrank more slowly than others.** Between the original and deep rule sets, the gap between two contacts went from 2λ to 4λ, and the gap between wells at different voltages from 9λ to 18λ, while poly stayed 2λ wide.[^scmos8]
 
-```{raw} html
-<figure class="fig wide" id="fig-pitch">
-  <div class="diagram" data-diagram="pitch"><noscript><p>Contacted metal pitch at λ = 0.5 µm: λ rules give half a contact 0.5, surround 0.5, metal gap 1.5, surround 0.5, half a contact 0.5, total 3.5 µm; the process's own micron rules give 0.375, 0.5, 1.0, 0.5, 0.375, total 2.75 µm.</p></noscript></div>
-  <figcaption><strong>Theory versus practice: λ rules spend extra space.</strong> The distance between two contacted metal wires, built from its parts, under λ rules (λ = 0.5 µm) and under the same process's own micron rules, drawn to the same scale. The micron rules allow smaller contacts and a narrower metal gap. Values from <a href="https://www.csl.cornell.edu/courses/ece6745/handouts/ece6745-T04-methodology-custom.pdf">Batten, Cornell ECE 6745, slide 21</a> (after Weste, table 3.2), whose totals are 7λ = 3.5 µm and 2.75 µm.</figcaption>
-</figure>
-```
+**Integer λ ran out of resolution.** The DEEP rules needed values such as 2.5λ and 1.5λ, and "half-lambda rules reduce productivity because they force the designer off a λ grid."[^scmos8][^westeharris2011]
 
-"Scaled design is legal but much larger than it needs to be!", the slide concludes.[^batten]
+**No single λ fitted a real process.** Dividing each GF180MCU minimum by its λ multiple gives a different λ: the 0.28 µm gate (2λ) needs λ = 0.14 µm, the 0.24 µm poly gap (2λ) 0.12 µm, the 0.22 µm contact (2λ) 0.11 µm and the 0.23 µm metal 1 width (3λ) about 0.077 µm.[^gf180rules][^lyon1981] One λ has to take the largest, 0.14 µm, and every other rule then wastes space.
 
-**Integer λ ran out of resolution.** The DEEP rules needed values such as 2.5λ and 1.5λ, so layouts had to sit on a half-λ grid and the unit was no longer whole.[^scmos8]
+**New kinds of rule were about area, not widths or gaps.** Processes set **density** limits, such as GF180MCU's requirements that metal cover more than 30% of the chip and poly at least 14%, with dummy shapes added where needed.[^gf180rules] [**Antenna rules**](https://en.wikipedia.org/wiki/Antenna_effect) cap "the maximum allowed ratio of interconnect area exposed to plasma etch to active gate poly area", because long wires collect charge while they are etched and can damage the gate they connect to.[^sky130antenna]
 
-**New kinds of rule were about area, not widths or gaps.** Each metal layer is polished flat ([chemical-mechanical polishing](https://en.wikipedia.org/wiki/Chemical-mechanical_polishing)), which only works if it is evenly filled, so processes set **density** limits: SKY130 checks metal 1 density over 700 µm squares.[^sky130rules] [**Antenna rules**](https://en.wikipedia.org/wiki/Antenna_effect) cap "the maximum allowed ratio of interconnect area exposed to plasma etch to active gate poly area", because long wires collect charge during etching that can destroy a gate.[^sky130antenna]
+**Lithography went below the wavelength of light.** By 1999, 0.18 µm features were printed with 0.248 µm ultraviolet light (a wavelength, unrelated to the layout λ), helped by [optical proximity correction](https://en.wikipedia.org/wiki/Optical_proximity_correction), which deliberately distorts the mask so the printed shape comes out right.[^liebmann2003] For smaller features, IBM's Lars Liebmann reported in 2003, "simple (i.e. understandable) design rules are inadequate (misleading)".[^liebmann2003]
 
-**Lithography went below the wavelength of light.** Chips are printed by [photolithography](https://en.wikipedia.org/wiki/Photolithography), projecting the mask with light. By 1999, 0.18 µm features were printed with 0.248 µm ultraviolet light (a wavelength, unrelated to the layout λ), helped by [optical proximity correction](https://en.wikipedia.org/wiki/Optical_proximity_correction), which deliberately distorts the mask so that the printed shape comes out right.[^liebmann2003] For smaller features, IBM's Lars Liebmann reported in 2003, the stronger tricks needed "require layout restrictions", and "simple (i.e. understandable) design rules are inadequate (misleading)".[^liebmann2003]
+**The rulebooks exploded.** Synopsys's Marco Casale-Rossi contrasted Conway's "just two pages" with "several thousands of complex design rules", described in "tens of thousands of lines of code".[^casale2014] Another count gives about 400 checks at 0.35 µm and more than 5,000 at 28 nm.[^date2013]
 
-**The rulebooks exploded.** Casale-Rossi contrasted Conway's "just two pages" with modern processes needing "several thousands of complex design rules", described in "tens of thousands of lines of code".[^casale2014] *Semiconductor Engineering* reported in 2018 that the count rises steeply again when a single layer is printed in two, three or four exposures, a technique called [multiple patterning](https://en.wikipedia.org/wiki/Multiple_patterning).[^semieng2018]
+MOSIS's λ rules stop at 0.18 µm, in a document last revised in 2009, and by 2020 MOSIS had dropped support for them; they "only worked because they used conservative rules that did not reveal manufacturing limits".[^scmos8][^edwards2020] λ lives on in teaching: Harvey Mudd College's course still introduces rules "in terms of λ = f/2", with *f* the feature size.[^harris]
 
-There was no single day when λ died. MOSIS's scalable rules stop at 0.18 µm, in a document last revised in 2009, and by 2020 Tim Edwards wrote that MOSIS "has dropped support" for its SCMOS kits, which "only worked because they used conservative rules that did not reveal manufacturing limits".[^scmos8][^edwards2020] λ lives on in teaching: Harvey Mudd College's *CMOS VLSI Design* course still introduces rules "in terms of λ = f/2", with *f* the feature size.[^harris]
-
-(sec-survived)=
-## What replaced the ruler
-
-Chip design kits now hold each factory's exact rules in microns rather than one scalable ruler.[^edwards2020] GlobalFoundries' 180 nm GF180MCU kit shows why no λ would fit. Its 3.3 V transistors need a gate at least 0.28 µm long, contacts exactly 0.22 µm square, metal 1 at least 0.23 µm wide and poly lines 0.24 µm apart.[^gf180rules] Measured in λ = 0.09 µm, the value MOSIS used for 0.18 µm processes, those are 3.1λ, 2.4λ, 2.6λ and 2.7λ: no whole-number multiples of any one λ.[^scmos74][^gf180rules] Drawn to the exact numbers, the same inverter comes out smaller than the λ version, because each dimension takes only the space its own rule needs.
-
-<figure class="fig" id="fig-exact">
-  <div class="diagram" data-diagram="exact"><noscript><p>The 28λ × 46λ inverter at λ = 0.09 µm measures 2.52 × 4.14 µm (10.4 µm²). The same circuit drawn to GF180MCU rules measures 2.20 × 3.06 µm (6.7 µm²).</p></noscript></div>
-  <div class="legend"><span style="--c:var(--l-well)">n-well</span><span style="--c:var(--l-diff)">diffusion</span><span style="--c:var(--l-poly)">polysilicon</span><span style="--c:var(--l-metal)">metal</span><span style="--c:var(--l-contact)">contact</span></div>
-  <figcaption><strong>The same inverter at 180 nm, drawn both ways at the same scale.</strong> Left: the λ drawing from <a href="#fig-shrink">the earlier figure</a> at λ = 0.09 µm. Right: the same circuit drawn for this article to GF180MCU's 3.3 V rules (contact, Poly2, COMP, Nwell and Metal1 rules CO.1–CO.8, PL.2–PL.5b, DF.4c, DF.6, DF.16 and Mn.1–Mn.3, checked by script), with the λ cell's outline dashed behind it. Both are simplified hand layouts without implant layers, so the area saving is illustrative. Rules from the <a href="https://gf180mcu-pdk.readthedocs.io/en/latest/physical_verification/design_manual/drm_07_02.html">GF180MCU design manual</a>.</figcaption>
-</figure>
-
-"We had defined a clean interface between design and fab," Conway wrote.[^conway2012] For about twenty years that interface was λ, a conservative ruler that gave up area for "portability and simplicity".[^scmos8] Today it is a process design kit holding the factory's exact rules.[^edwards2020]
+"We had defined a clean interface between design and fab," Conway wrote.[^conway2012] For two decades that interface was λ, a conservative ruler that gave up area for "portability and simplicity".[^scmos8]
 
 ## Further reading
 
-- Lynn Conway, [*Reminiscences of the VLSI Revolution*](https://worrydream.com/refs/Conway_L_2012_-_Reminiscences_of_the_VLSI_Revolution.pdf) (2012), Conway's own long account.
-- Lynn Conway, [*The MPC Adventures*](https://ftp.mirrorservice.org/sites/www.bitsavers.org/pdf/xerox/parc/techReports/VLSI-81-2_The_MPC_Adventures.pdf) (1981), the shared-wafer experiments reported at the time.
-- National Research Council, [*Funding a Revolution*, chapter 4](https://web.archive.org/web/20260802192522/https://www.nationalacademies.org/read/6323/chapter/6) (1999), on DARPA's VLSI programme and what came out of it.
+- Richard F. Lyon, [*Simplified Design Rules for VLSI Layouts*](https://www.dicklyon.com/tech/Scans/DesignRules-Lyon.pdf) (1981), the λ rules with the reason for each.
+- Neil Weste and David Harris, [*CMOS VLSI Design*](https://pages.hmc.edu/harris/cmosvlsi/4e/index.html), 4th edition (2011), section 1.5.3 and chapter 3, on λ versus micron rules.
+- Lynn Conway, [*Reminiscences of the VLSI Revolution*](https://worrydream.com/refs/Conway_L_2012_-_Reminiscences_of_the_VLSI_Revolution.pdf) (2012), on how the rules were devised.
 
 ## Sources
 
@@ -290,42 +254,33 @@ Chip design kits now hold each factory's exact rules in microns rather than one 
 [^gf180rules]: GlobalFoundries, GF180MCU PDK design manual, sections [7.4 Nwell](https://gf180mcu-pdk.readthedocs.io/en/latest/physical_verification/design_manual/drm_07_05.html), [7.5 Comp](https://gf180mcu-pdk.readthedocs.io/en/latest/physical_verification/design_manual/drm_07_06.html), [7.7 Poly2](https://gf180mcu-pdk.readthedocs.io/en/latest/physical_verification/design_manual/drm_07_08.html), [7.12 Contact](https://gf180mcu-pdk.readthedocs.io/en/latest/physical_verification/design_manual/drm_07_13.html) and [7.13 Metaln](https://gf180mcu-pdk.readthedocs.io/en/latest/physical_verification/design_manual/drm_07_14.html); 3.3 V column.
 [^lyon1981]: Richard F. Lyon, ["Simplified Design Rules for VLSI Layouts"](https://www.dicklyon.com/tech/Scans/DesignRules-Lyon.pdf), Southcon '81, January 1981; also *LAMBDA*, first quarter 1981.
 [^mpcadventures]: Lynn Conway, ["The MPC Adventures: Experiences with the Generation of VLSI Design and Implementation Methodologies"](https://ftp.mirrorservice.org/sites/www.bitsavers.org/pdf/xerox/parc/techReports/VLSI-81-2_The_MPC_Adventures.pdf), Xerox PARC report VLSI-81-2, January 1981. Journal version: *Microprocessing and Microprogramming* 10(4), 1982, pp. 209–228, DOI [10.1016/0165-6074(82)90054-0](https://doi.org/10.1016/0165-6074(82)90054-0).
-[^mpc79doc]: Lynn Conway, Alan Bell, Martin Newell et al., ["MPC79 Implementation Documentation"](https://web.archive.org/web/20231122152953/https://ai.eecs.umich.edu/people/conway/VLSI/MPC79/ImpDoc/ImpDoc79Front.html), Xerox PARC, 1980 (archived copy).
 [^cohen1981]: Danny Cohen and George Lewicki, ["MOSIS: The ARPA Silicon Broker"](https://web.archive.org/web/20240829090244/http://caltechconf.library.caltech.edu/219/1/DannyCohen.pdf), Proceedings of the Second Caltech Conference on VLSI, January 1981 (archived copy).
 [^isi1984]: USC Information Sciences Institute, ["1984 Annual Technical Report" (ISI/SR-85-150)](https://web.archive.org/web/20250119100913/https://apps.dtic.mil/sti/pdfs/ADA157991.pdf), MOSIS chapter, 1985 (archived copy of DTIC ADA157991).
 [^nrc1999]: National Research Council, ["Funding a Revolution: Government Support for Computing Research", chapter 4](https://web.archive.org/web/20260802192522/https://www.nationalacademies.org/read/6323/chapter/6), National Academy Press, 1999 (archived copy). DOI [10.17226/6323](https://doi.org/10.17226/6323).
-[^viterbi2005]: USC Viterbi School of Engineering, ["MOSIS Free Chips for Students Program Nears Quarter Century Mark"](https://viterbischool.usc.edu/news/2005/05/mosis-free-chips-for-students-program-nears-quarter-century-mark/), May 2005.
-[^mosisfab1997]: MOSIS, ["MOSIS Fabrication Schedule"](https://web.archive.org/web/19970717024919/http://www.mosis.org:80/mosis-fab.html), July 1997 (archived copy).
 [^hp1997]: MOSIS, ["HP CMOS14TB Technology"](https://web.archive.org/web/19970717030547/http://www.mosis.org:80/html/hp-cmos14tb-tech.html), 1997 (archived copy).
-[^mosisvendors2010]: MOSIS, ["Fabrication Vendors"](https://web.archive.org/web/20101226053736/http://www.mosis.com/products/fab/vendors/), December 2010 (archived copy).
-[^cmp1981]: PATSTEC, ["Circuit intégré : boîte de masques de circuits multi-projets"](https://www.patstec.fr/pdfgen.php?id=26861), inventory record of Grenoble's 1981 multi-project circuits.
-[^das2010]: Carl Das and John McLean, ["EUROCHIP-EUROPRACTICE: 20 Years of Design Support for European Universities"](https://www.mes.tu-darmstadt.de/media/mikroelektronische_systeme/pdf_3/ewme2010/proceedings/others/das_paper.pdf), European Workshop on Microelectronics Education, 2010.
 [^dennard1974]: Robert H. Dennard et al., "Design of ion-implanted MOSFET's with very small physical dimensions", *IEEE Journal of Solid-State Circuits* 9(5), October 1974, pp. 256–268. DOI [10.1109/JSSC.1974.1050511](https://doi.org/10.1109/JSSC.1974.1050511).
-[^baker1980]: Clark M. Baker, ["Artwork Analysis Tools for VLSI Circuits"](https://ftp.mirrorservice.org/sites/www.bitsavers.org/pdf/mit/lcs/tr/MIT-LCS-TR-0239.pdf), MIT/LCS/TR-239, May 1980.
 [^scmos72]: MOSIS, ["MOSIS Scalable CMOS (SCMOS) Design Rules, revision 7.2"](https://www.ece.iit.edu/~eoruklu/courses/ece429/tutorial/rules72.html), undated, before March 2000 (university mirror).
 [^scmos74]: MOSIS, ["MOSIS Scalable CMOS (SCMOS) Design Rules, revision 7.4"](https://web.archive.org/web/20001002134149/http://www.mosis.org/Technical/Designrules/scmos/scmos-main.html), March 2000 (archived copy).
 [^scmos8]: MOSIS, ["MOSIS Scalable CMOS (SCMOS) Design Rules, revision 8.00"](https://web.archive.org/web/20111231160920/http://www.mosis.com:80/Technical/Designrules/scmos/scmos-main.html), updated May 2009 (archived copy).
 [^cif1980]: Robert Sproull, Richard Lyon and Stephen Trimberger, ["The Caltech Intermediate Form for LSI Layout Description"](https://authors.library.caltech.edu/records/jmrgc-2f168), Caltech Computer Science Technical Report 2686, February 1980.
 [^icarus1978]: Douglas G. Fairbairn and James A. Rowson, "ICARUS: An interactive integrated circuit layout program", 15th Design Automation Conference, 1978, pp. 188–192. DOI [10.1109/DAC.1978.1585168](https://doi.org/10.1109/DAC.1978.1585168).
-[^bristle1979]: Dave Johannsen, ["Bristle Blocks: A Silicon Compiler"](https://authors.library.caltech.edu/records/1rrxm-n2k44), 16th Design Automation Conference, 1979, pp. 310–313. DOI [10.1109/DAC.1979.1600125](https://doi.org/10.1109/DAC.1979.1600125).
-[^cifplot1981]: Daniel T. Fitzpatrick, ["CIFPLOT: Plotting Software for IC Layouts"](https://www2.eecs.berkeley.edu/Pubs/TechRpts/1981/ERL-m-81-96.pdf), UC Berkeley ERL M81/96, December 1981.
 [^magic1984]: John K. Ousterhout, Gordon T. Hamachi, Robert N. Mayo, Walter S. Scott and George S. Taylor, "Magic: A VLSI Layout System", 21st Design Automation Conference, 1984, pp. 152–159. DOI [10.1109/DAC.1984.1585789](https://doi.org/10.1109/DAC.1984.1585789).
 [^magicdrc1984]: George S. Taylor and John K. Ousterhout, "Magic's Incremental Design-Rule Checker", 21st Design Automation Conference, 1984. DOI [10.1109/DAC.1984.1585790](https://doi.org/10.1109/DAC.1984.1585790).
 [^magicmanual]: Magic VLSI, ["Magic Maintainer's Manual #2: The Technology File"](https://opencircuitdesign.com/magic/techref/maint2.html).
 [^magicsite]: Open Circuit Design, ["Magic VLSI Layout Tool"](https://opencircuitdesign.com/magic/), project home page.
 [^scheme1980]: Jack Holloway, Guy L. Steele Jr., Gerald Jay Sussman and Alan Bell, ["The SCHEME-79 Chip"](https://dspace.mit.edu/handle/1721.1/6334), MIT AI Memo 559, January 1980.
 [^clark1982]: James H. Clark, ["The Geometry Engine: A VLSI Geometry System for Graphics"](https://archive.org/download/bitsavers_sgiirisgeok_1057823/p127-clark.pdf), *Computer Graphics* (SIGGRAPH '82) 16(3), July 1982, pp. 127–133. DOI [10.1145/800064.801272](https://doi.org/10.1145/800064.801272).
-[^chmsgi]: Computer History Museum, ["Silicon Graphics"](https://www.computerhistory.org/revolution/computer-graphics-music-and-art/15/219), *Revolution* exhibition.
 [^chmrisc]: Computer History Museum, ["RISC I"](https://www.computerhistory.org/revolution/digital-logic/12/286/1591), *Revolution* exhibition.
 [^peek1983]: James B. Peek, ["The VLSI Circuitry of RISC I"](https://www2.eecs.berkeley.edu/Pubs/TechRpts/1983/6347.html), UC Berkeley UCB/CSD-83-135, June 1983.
-[^ethw]: IEEE, ["Milestones: First RISC (Reduced Instruction-Set Computing) Microprocessor, 1980–1982"](https://ethw.org/Milestones:First_RISC_(Reduced_Instruction-Set_Computing)_Microprocessor_1980-1982), dedicated February 2015.
 [^mipsoh]: Computer History Museum, ["Oral History of MIPS Computer Systems Founders" (panel with John Hennessy, John Moussouris, Skip Stritter and others)](https://archive.computerhistory.org/resources/access/text/2012/01/102746197-05-01-acc.pdf), 2011.
-[^risc1981]: David A. Patterson and Carlo H. Séquin, ["RISC I: A Reduced Instruction Set VLSI Computer"](https://www.cse.iitk.ac.in/users/biswap/CS422/RISC-ISCA81.pdf), 8th International Symposium on Computer Architecture, May 1981, pp. 443–457.
 [^batten]: Christopher Batten, ["T04: Full-Custom Design Methodology"](https://www.csl.cornell.edu/courses/ece6745/handouts/ece6745-T04-methodology-custom.pdf), Cornell ECE 6745 lecture slides, slide 21 (adapted from MIT 6.371, fall 2002, which cites Weste and Eshraghian, table 3.2).
 [^liebmann2003]: Lars Liebmann, ["Layout Impact of Resolution Enhancement Techniques: Impediment or Opportunity?"](https://ispd.cc/slides/2003/07_1_liebmann.pdf), International Symposium on Physical Design, 2003 (slides © 2002 IBM).
 [^casale2014]: Marco Casale-Rossi, ["The Heritage of Mead & Conway: What Has Remained the Same, What Has Changed, What Was Missed, and What Lies Ahead"](https://www.uvic.ca/research/transchair/assets/docs/The%20Heritage%20of%20Mead%20and%20Conway.pdf), *Proceedings of the IEEE* 102(2), February 2014, pp. 114–119. DOI [10.1109/JPROC.2013.2295871](https://doi.org/10.1109/JPROC.2013.2295871).
-[^semieng2018]: Ed Sperling, ["Design Rule Complexity Rising"](https://semiengineering.com/design-rule-complexity-rising), *Semiconductor Engineering*, April 2018.
 [^harris]: David Harris, ["Introduction" (lecture 0)](https://pages.hmc.edu/harris/class/e158/16/lect0.pdf), *CMOS VLSI Design*, Harvey Mudd College E158, 2016, slide 39.
 [^edwards2020]: R. Timothy Edwards, ["Google/SkyWater and the Promise of the Open PDK"](https://woset-workshop.github.io/PDFs/2020/a03.pdf), Workshop on Open-Source EDA Technology (WOSET), 2020.
-[^sky130rules]: SkyWater, ["SKY130 Periphery Rules"](https://skywater-pdk.readthedocs.io/en/main/rules/periphery.html), rules poly.1a, poly.2, m1.1 and m1.pd.
 [^sky130antenna]: SkyWater, ["SKY130 Antenna Rules"](https://skywater-pdk.readthedocs.io/en/main/rules/antenna.html).
+[^westeharris2011]: Neil H. E. Weste and David Money Harris, [*CMOS VLSI Design: A Circuits and Systems Perspective*](https://pages.hmc.edu/harris/cmosvlsi/4e/index.html), 4th edition, Addison-Wesley, 2011: section 1.5.3 (pp. 25–26, including footnote), section 3.3 (pp. 118–119) and the box "Using lambda design rules on commercial designs" (p. 137).
+[^riscerl1982]: David A. Patterson and Carlo H. Séquin, ["A VLSI RISC"](https://www2.eecs.berkeley.edu/Pubs/TechRpts/1982/ERL-m-82-10.pdf), UC Berkeley report UCB/ERL M82/10, 17 February 1982, p. 12 and table 8.
+[^risc2jssc1984]: Robert W. Sherburne, Manolis G. H. Katevenis, David A. Patterson and Carlo H. Séquin, ["A 32-bit NMOS microprocessor with a large register file"](https://doi.org/10.1109/JSSC.1984.1052208), *IEEE Journal of Solid-State Circuits* 19(5), 1984, pp. 682–689 (abstract).
+[^hoel1986]: Jeff Hoel, ["Dragon CMOS Design Rules", revision C](https://xeroxparcarchive.computerhistory.org/_cd4_/dragon7.0/documentation/dragoncmosdesignrules/.DragonCMOSDesignRulesC.tioga!3.html), Xerox PARC, 26 January 1986.
+[^date2013]: Luca Carloni and others, ["The Heritage of Mead & Conway: What Has Remained the Same, What Has Changed, What Was Missed, and What Lies Ahead"](https://www.cs.columbia.edu/~luca/research/DATE13_panel.pdf), panel summary, DATE 2013 (statements by Alberto Sangiovanni-Vincentelli and Bernard Courtois).
